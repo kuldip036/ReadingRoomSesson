@@ -7,289 +7,134 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --brown: #6B3A2A;
-    --brown-light: #C47B4A;
-    --cream: #FDF8F3;
-    --cream-dark: #F5EAE0;
-    --text: #4A2C1A;
-    --muted: #A0775E;
-    --border: #D9C4B0;
-    --divider: #E8D5C4;
-  }
-
-  html { scroll-behavior: smooth; }
-
   body {
     font-family: 'Lato', sans-serif;
-    background: #1A0D06;
+    background: #1a0d06;
     min-height: 100vh;
-    color: var(--text);
-    overflow-x: hidden;
+    color: #4A2C1A;
   }
-
-  /* Ambient background glow */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(196,123,74,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(107,58,42,0.15) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
   .page {
-    position: relative;
-    z-index: 1;
-    max-width: 600px;
+    max-width: 540px;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem 4rem;
+    padding: 2rem 1.25rem 4rem;
   }
-
-  /* ── Header ── */
   .header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 2.5rem;
-    animation: fadeUp 0.6s ease both;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 2rem;
   }
-
   .logo-circle {
-    width: 56px; height: 56px;
-    background: var(--brown);
-    border-radius: 50%;
+    width: 50px; height: 50px;
+    background: #6B3A2A; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 20px rgba(107,58,42,0.5);
   }
-
   .brand-name {
     font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: #FDF3E9;
-    line-height: 1.1;
+    font-size: 22px; font-weight: 700; color: #FDF3E9; line-height: 1.1;
   }
-
   .brand-tagline {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-top: 3px;
+    font-size: 11px; color: #A0775E;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px;
   }
-
-  /* ── Card (form container) ── */
   .card {
-    background: var(--cream);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 8px 48px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.08) inset;
-    animation: fadeUp 0.6s 0.1s ease both;
+    background: #FDF8F3; border-radius: 18px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45);
   }
-
   .section-title {
     font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--brown);
-    margin-bottom: 0.9rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--divider);
+    font-size: 14px; font-weight: 600; color: #6B3A2A;
+    margin-bottom: 0.8rem; padding-bottom: 0.4rem;
+    border-bottom: 1px solid #E8D5C4;
   }
-
   .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 1.25rem;
   }
-
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
   .form-group.full { grid-column: 1 / -1; }
-
   label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #A0775E;
   }
-
   input[type=text], input[type=number] {
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 13px;
-    font-size: 15px;
-    font-family: 'Lato', sans-serif;
-    color: var(--text);
-    background: #FFFAF6;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    border: 1.5px solid #D9C4B0; border-radius: 9px;
+    padding: 9px 11px; font-size: 14px;
+    font-family: 'Lato', sans-serif; color: #4A2C1A;
+    background: #FFFAF6; outline: none;
+    transition: border-color 0.2s;
     width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
   }
-  input:focus {
-    border-color: var(--brown-light);
-    box-shadow: 0 0 0 3px rgba(196,123,74,0.15);
-  }
+  input:focus { border-color: #C47B4A; }
   input::placeholder { color: #C0A898; }
-
-  .divider { height: 1px; background: var(--divider); margin: 1.5rem 0; }
-
-  /* ── Color swatches ── */
-  .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .divider { height: 1px; background: #E8D5C4; margin: 1.25rem 0; }
+  .swatch-row { display: flex; gap: 9px; flex-wrap: wrap; }
   .swatch {
-    width: 30px; height: 30px; border-radius: 50%;
-    border: 3px solid transparent;
-    cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-    outline: none;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 3px solid transparent; cursor: pointer;
+    transition: transform 0.15s;
   }
   .swatch:hover { transform: scale(1.15); }
-  .swatch.active {
-    border-color: var(--brown);
-    box-shadow: 0 0 0 2px rgba(107,58,42,0.25);
-  }
-
-  /* ── Background buttons ── */
-  .bg-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .swatch.active { border-color: #6B3A2A; }
+  .bg-row { display: flex; gap: 7px; flex-wrap: wrap; }
   .bg-btn {
-    padding: 7px 14px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    font-size: 12px;
-    font-family: 'Lato', sans-serif;
-    cursor: pointer;
-    background: #FFFAF6;
-    color: var(--brown);
-    font-weight: 700;
+    padding: 6px 12px; border-radius: 20px;
+    border: 1.5px solid #D9C4B0; font-size: 12px;
+    font-family: 'Lato', sans-serif; cursor: pointer;
+    background: #FFFAF6; color: #6B3A2A; font-weight: 700;
     transition: all 0.15s;
-    white-space: nowrap;
   }
-  .bg-btn.active { background: var(--brown); color: #FDF3E9; border-color: var(--brown); }
-  .bg-btn:hover:not(.active) { background: var(--cream-dark); }
-
-  .hint {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 6px;
-    line-height: 1.5;
-  }
-
-  /* ── Generate button ── */
+  .bg-btn.active { background: #6B3A2A; color: #FDF3E9; border-color: #6B3A2A; }
+  .bg-btn:hover:not(.active) { background: #F5EAE0; }
+  .hint { font-size: 11px; color: #A0775E; margin-top: 5px; line-height: 1.5; }
   .generate-btn {
-    width: 100%;
-    background: var(--brown);
-    color: #FDF3E9;
-    border: none;
-    border-radius: 12px;
-    padding: 15px;
-    font-family: 'Lato', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 4px 16px rgba(107,58,42,0.35);
+    width: 100%; background: #6B3A2A; color: #FDF3E9;
+    border: none; border-radius: 11px; padding: 14px;
+    font-family: 'Lato', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: 0.5rem;
+    box-shadow: 0 4px 16px rgba(107,58,42,0.4);
+    transition: background 0.2s;
   }
-  .generate-btn:hover { background: #8A4B36; box-shadow: 0 6px 20px rgba(107,58,42,0.45); }
-  .generate-btn:active { transform: scale(0.98); }
-
-  /* ── Preview area ── */
-  #preview-area {
-    display: none;
-    margin-top: 2rem;
-    animation: fadeUp 0.5s ease both;
-  }
-
+  .generate-btn:hover { background: #8A4B36; }
+  #preview-area { display: none; margin-top: 2rem; }
   .preview-label {
     font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: #FDF3E9;
-    margin-bottom: 0.75rem;
-    opacity: 0.7;
+    font-size: 14px; color: #FDF3E9; margin-bottom: 0.75rem; opacity: 0.7;
   }
-
-  .canvas-wrap {
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+  .canvas-outer {
+    max-width: 320px; margin: 0 auto;
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
   }
-
-  #card-canvas {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
+  #card-canvas { display: block; width: 100%; height: auto; }
   .download-btn {
-    width: 100%;
-    background: transparent;
-    color: #FDF3E9;
-    border: 1.5px solid rgba(253,243,233,0.35);
-    border-radius: 12px;
-    padding: 13px;
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 12px;
-    transition: background 0.2s, border-color 0.2s;
+    display: block; width: 100%; max-width: 320px; margin: 12px auto 0;
+    background: transparent; color: #FDF3E9;
+    border: 1.5px solid rgba(253,243,233,0.4); border-radius: 11px;
+    padding: 12px; font-family: 'Lato', sans-serif; font-size: 14px;
+    font-weight: 700; cursor: pointer; text-align: center;
+    transition: background 0.2s;
   }
-  .download-btn:hover {
-    background: rgba(253,243,233,0.08);
-    border-color: rgba(253,243,233,0.6);
-  }
-
-  /* ── Footer ── */
+  .download-btn:hover { background: rgba(253,243,233,0.08); }
   .footer {
-    text-align: center;
-    margin-top: 3rem;
-    font-size: 11px;
-    color: rgba(253,243,233,0.25);
-    letter-spacing: 0.06em;
-  }
-
-  /* ── Animations ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Mobile ── */
-  @media (max-width: 480px) {
-    .page { padding: 1.5rem 1rem 3rem; }
-    .form-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .brand-name { font-size: 22px; }
-    .card { padding: 1.5rem; }
+    text-align: center; margin-top: 3rem;
+    font-size: 11px; color: rgba(253,243,233,0.2); letter-spacing: 0.06em;
   }
 </style>
 </head>
 <body>
-
 <div class="page">
 
-  <!-- Header -->
   <div class="header">
     <div class="logo-circle">
-      <svg width="34" height="34" viewBox="0 0 52 52" fill="none">
+      <svg width="30" height="30" viewBox="0 0 52 52" fill="none">
         <path d="M11 33 L11 20 Q18 17 26 17 L26 33 Q18 34 11 33Z" fill="#FDF3E9"/>
         <path d="M41 33 L41 20 Q34 17 26 17 L26 33 Q34 34 41 33Z" fill="#F5E6D3"/>
         <line x1="26" y1="17" x2="26" y2="33" stroke="#C47B4A" stroke-width="1.5"/>
         <line x1="14" y1="22" x2="24" y2="22" stroke="#C47B4A" stroke-width="1" opacity="0.6"/>
         <line x1="14" y1="25" x2="24" y2="25" stroke="#C47B4A" stroke-width="1" opacity="0.6"/>
-        <line x1="14" y1="28" x2="21" y2="28" stroke="#C47B4A" stroke-width="1" opacity="0.6"/>
         <line x1="28" y1="22" x2="38" y2="22" stroke="#C47B4A" stroke-width="1" opacity="0.6"/>
         <line x1="28" y1="25" x2="38" y2="25" stroke="#C47B4A" stroke-width="1" opacity="0.6"/>
-        <line x1="28" y1="28" x2="35" y2="28" stroke="#C47B4A" stroke-width="1" opacity="0.6"/>
         <path d="M11 33 Q26 36 41 33" stroke="#C47B4A" stroke-width="1.5" fill="none"/>
         <circle cx="26" cy="11" r="3.5" fill="#F5C47B" opacity="0.9"/>
         <line x1="26" y1="14.5" x2="26" y2="17" stroke="#F5C47B" stroke-width="1.5" opacity="0.7"/>
@@ -297,34 +142,32 @@
     </div>
     <div>
       <div class="brand-name">Reading Room</div>
-      <div class="brand-tagline">Session Stats Generator</div>
+      <div class="brand-tagline">Instagram Story Stats</div>
     </div>
   </div>
 
-  <!-- Form card -->
   <div class="card">
-
     <p class="section-title">Log your reading session</p>
     <div class="form-grid">
       <div class="form-group">
         <label>Hours read</label>
-        <input type="number" id="hours" min="0" max="24" value="1" placeholder="0">
+        <input type="number" id="hours" min="0" max="24" value="1">
       </div>
       <div class="form-group">
         <label>Minutes read</label>
-        <input type="number" id="minutes" min="0" max="59" value="30" placeholder="0">
+        <input type="number" id="minutes" min="0" max="59" value="30">
       </div>
       <div class="form-group">
         <label>Pages read</label>
-        <input type="number" id="pages" min="0" value="45" placeholder="0">
+        <input type="number" id="pages" min="0" value="45">
       </div>
       <div class="form-group">
         <label>% complete</label>
-        <input type="number" id="percent" min="0" max="100" value="" placeholder="e.g. 42">
+        <input type="number" id="percent" min="0" max="100" placeholder="e.g. 42">
       </div>
       <div class="form-group full">
         <label>Book title (optional)</label>
-        <input type="text" id="booktitle" placeholder="e.g. The Midnight Library" maxlength="50">
+        <input type="text" id="booktitle" placeholder="e.g. The Midnight Library" maxlength="40">
       </div>
       <div class="form-group full">
         <label>Your name / handle (optional)</label>
@@ -336,406 +179,407 @@
 
     <p class="section-title">Card color</p>
     <div class="swatch-row" id="color-row">
-      <div class="swatch active" data-scheme="warm"   style="background:#6B3A2A;" title="Warm Brown"></div>
-      <div class="swatch"        data-scheme="terra"  style="background:#C47B4A;" title="Terracotta"></div>
-      <div class="swatch"        data-scheme="forest" style="background:#3A5A40;" title="Forest"></div>
-      <div class="swatch"        data-scheme="navy"   style="background:#2C3E6B;" title="Midnight Navy"></div>
-      <div class="swatch"        data-scheme="plum"   style="background:#5A3060;" title="Plum"></div>
-      <div class="swatch"        data-scheme="slate"  style="background:#3D3D3D;" title="Ink Black"></div>
+      <div class="swatch active" data-s="warm"   style="background:#6B3A2A;"></div>
+      <div class="swatch"        data-s="terra"  style="background:#C47B4A;"></div>
+      <div class="swatch"        data-s="forest" style="background:#3A5A40;"></div>
+      <div class="swatch"        data-s="navy"   style="background:#2C3E6B;"></div>
+      <div class="swatch"        data-s="plum"   style="background:#5A3060;"></div>
+      <div class="swatch"        data-s="slate"  style="background:#3D3D3D;"></div>
     </div>
 
     <div class="divider"></div>
 
     <p class="section-title">Preview background</p>
-    <div class="bg-row" id="bg-row">
+    <div class="bg-row">
       <button class="bg-btn active" data-bg="none">None</button>
       <button class="bg-btn" data-bg="nook">📚 Reading Nook</button>
       <button class="bg-btn" data-bg="cafe">☕ Rainy Café</button>
       <button class="bg-btn" data-bg="night">🌙 Night Lamp</button>
       <button class="bg-btn" data-bg="garden">🌿 Garden</button>
     </div>
-    <p class="hint">Background shows in preview only. Download gives a transparent PNG — overlay it on your own photo!</p>
+    <p class="hint">Backgrounds show in preview. Download = transparent PNG to overlay on your own photo.</p>
 
     <div class="divider"></div>
-
-    <button class="generate-btn" onclick="generateCard()">✦ Generate My Stats Card</button>
+    <button class="generate-btn" onclick="generate()">✦ Generate My Stats Card</button>
   </div>
 
-  <!-- Preview -->
   <div id="preview-area">
-    <div class="preview-label">Your stats card</div>
-    <div class="canvas-wrap">
-      <canvas id="card-canvas" width="960" height="540"></canvas>
+    <div class="preview-label">Your Instagram Story card</div>
+    <div class="canvas-outer">
+      <canvas id="card-canvas"></canvas>
     </div>
-    <button class="download-btn" onclick="downloadCard()">⬇ Download as PNG (transparent)</button>
+    <button class="download-btn" onclick="dlCard()">⬇ Download PNG</button>
   </div>
 
-  <div class="footer">Reading Room &nbsp;·&nbsp; Made with ♥ for readers</div>
-
+  <div class="footer">Reading Room · Made with ♥ for readers</div>
 </div>
 
 <script>
-const schemes = {
-  warm:   { bg:'#3D1A0A', accent:'#C47B4A', text:'#FDF3E9', sub:'#F0CBB0', line:'#8A4B2A' },
-  terra:  { bg:'#5C2800', accent:'#F5C47B', text:'#FFF8F0', sub:'#F5E0C0', line:'#C47B4A' },
-  forest: { bg:'#1A3320', accent:'#7EC89A', text:'#F0FFF4', sub:'#C0E8D0', line:'#3A7A55' },
-  navy:   { bg:'#151E3A', accent:'#7B9FD4', text:'#EEF2FF', sub:'#C0D0F0', line:'#2C4A8A' },
-  plum:   { bg:'#2A1030', accent:'#C07AD4', text:'#FAF0FF', sub:'#E0C0F0', line:'#6A3080' },
-  slate:  { bg:'#1A1A1A', accent:'#D4B896', text:'#F5F5F0', sub:'#C8C0B8', line:'#555555' },
+const CW = 1080, CH = 1920;
+
+const SCHEMES = {
+  warm:   { bg:'#3D1A0A', accent:'#C47B4A', text:'#FDF3E9', sub:'#D4A07A', dim:'rgba(253,243,233,0.15)' },
+  terra:  { bg:'#5C2800', accent:'#F5C47B', text:'#FFF8F0', sub:'#D4A850', dim:'rgba(255,248,240,0.15)' },
+  forest: { bg:'#1A3320', accent:'#6DC88A', text:'#F0FFF4', sub:'#90C8A8', dim:'rgba(240,255,244,0.15)' },
+  navy:   { bg:'#151E3A', accent:'#7B9FD4', text:'#EEF2FF', sub:'#8AAAD8', dim:'rgba(238,242,255,0.15)' },
+  plum:   { bg:'#2A1030', accent:'#C07AD4', text:'#FAF0FF', sub:'#A870C0', dim:'rgba(250,240,255,0.15)' },
+  slate:  { bg:'#1A1A1A', accent:'#D4B896', text:'#F5F5F0', sub:'#B09880', dim:'rgba(245,245,240,0.15)' },
 };
 
-let currentScheme = 'warm';
-let currentBg = 'none';
+let scheme = 'warm';
+let bgChoice = 'none';
 
-document.querySelectorAll('.swatch').forEach(s => {
-  s.addEventListener('click', () => {
-    document.querySelectorAll('.swatch').forEach(b => b.classList.remove('active'));
-    s.classList.add('active');
-    currentScheme = s.dataset.scheme;
+document.querySelectorAll('.swatch').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    scheme = el.dataset.s;
   });
 });
-
-document.querySelectorAll('.bg-btn').forEach(b => {
-  b.addEventListener('click', () => {
+document.querySelectorAll('.bg-btn').forEach(el => {
+  el.addEventListener('click', () => {
     document.querySelectorAll('.bg-btn').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    currentBg = b.dataset.bg;
+    el.classList.add('active');
+    bgChoice = el.dataset.bg;
   });
 });
 
-/* ── Background painters ── */
-function drawBg(ctx, W, H, bg) {
-  if (bg === 'none') return;
-  ctx.save();
-
+function paintBg(ctx, bg) {
   if (bg === 'nook') {
-    const wallGrad = ctx.createLinearGradient(0,0,0,H);
-    wallGrad.addColorStop(0,'#3D1C08'); wallGrad.addColorStop(1,'#1A0A02');
-    ctx.fillStyle = wallGrad; ctx.fillRect(0,0,W,H);
-    const glow = ctx.createRadialGradient(W*.78,H*.18,10,W*.78,H*.18,W*.55);
-    glow.addColorStop(0,'rgba(255,200,80,0.28)'); glow.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=glow; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#2A1206'; ctx.fillRect(0,H*.72,W,H*.28);
-    ctx.strokeStyle='#3A1A08'; ctx.lineWidth=1;
-    for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,H*.72);ctx.lineTo(x,H);ctx.stroke();}
-    for(let y=H*.78;y<H;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-    ctx.fillStyle='#5A2D0A'; ctx.fillRect(W*.68,H*.08,W*.30,H*.64);
-    ctx.fillStyle='#3A1A05';
-    [H*.08,H*.30,H*.52,H*.72].forEach(sy=>ctx.fillRect(W*.68,sy,W*.30,8));
-    const bc=['#8B2020','#1A4A6B','#2A5A2A','#6B4A1A','#4A2A6B','#8B5A1A','#1A5A5A','#6B1A3A'];
-    [H*.11,H*.33,H*.55].forEach(sy=>{
-      let bx=W*.69;
-      bc.forEach((c,i)=>{
-        const bw=18+(i%3)*8; ctx.fillStyle=c; ctx.fillRect(bx,sy,bw,H*.16);
-        ctx.fillStyle='rgba(255,255,255,0.07)'; ctx.fillRect(bx,sy,2,H*.16);
-        bx+=bw+2; if(bx>W*.96)return;
-      });
-    });
-    ctx.fillStyle='#7A3A18';
-    ctx.beginPath(); ctx.roundRect(W*.03,H*.55,W*.18,H*.17,8); ctx.fill();
-    ctx.fillStyle='#6A2E12';
-    ctx.fillRect(W*.03,H*.45,W*.05,H*.12); ctx.fillRect(W*.16,H*.45,W*.05,H*.12);
-    ctx.strokeStyle='#D4A060'; ctx.lineWidth=3;
-    ctx.beginPath();ctx.moveTo(W*.60,H*.72);ctx.lineTo(W*.60,H*.22);ctx.stroke();
-    ctx.fillStyle='#F5C060';
-    ctx.beginPath();ctx.moveTo(W*.52,H*.22);ctx.lineTo(W*.68,H*.22);ctx.lineTo(W*.64,H*.10);ctx.lineTo(W*.56,H*.10);ctx.closePath();ctx.fill();
+    let g = ctx.createLinearGradient(0,0,0,CH);
+    g.addColorStop(0,'#3B1A07'); g.addColorStop(1,'#180902');
+    ctx.fillStyle = g; ctx.fillRect(0,0,CW,CH);
+    let glow = ctx.createRadialGradient(CW/2,CH*0.2,50, CW/2,CH*0.2,CW*0.9);
+    glow.addColorStop(0,'rgba(255,190,70,0.22)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0,0,CW,CH);
+    ctx.fillStyle = '#271003'; ctx.fillRect(0,CH*0.78,CW,CH*0.22);
+    ctx.strokeStyle = '#341508'; ctx.lineWidth = 3;
+    for (let x=0; x<CW; x+=140) { ctx.beginPath(); ctx.moveTo(x,CH*0.78); ctx.lineTo(x,CH); ctx.stroke(); }
+    for (let y=CH*0.82; y<CH; y+=65) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(CW,y); ctx.stroke(); }
+    ctx.fillStyle = '#522808'; ctx.fillRect(CW*0.55,CH*0.05,CW*0.42,CH*0.70);
+    ctx.fillStyle = '#351505';
+    for (let sy of [CH*0.05,CH*0.24,CH*0.42,CH*0.60,CH*0.72]) ctx.fillRect(CW*0.55,sy,CW*0.42,12);
+    const bkC = ['#8B2020','#1A4A6B','#2A5A2A','#6B4A1A','#4A2A6B','#8B5A1A','#2A5A5A','#6B1A3A','#3A3A8B','#8B3A5A','#2A6B2A','#6B6B1A'];
+    for (let row of [CH*0.07,CH*0.26,CH*0.44,CH*0.62]) {
+      let bx = CW*0.57;
+      for (let i=0; i<12; i++) {
+        let bw = 52+(i%4)*18; if (bx+bw > CW*0.96) break;
+        ctx.fillStyle = bkC[i%bkC.length]; ctx.fillRect(bx,row,bw,CH*0.16);
+        ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.fillRect(bx,row,5,CH*0.16);
+        bx += bw+5;
+      }
+    }
+    ctx.fillStyle = '#6E3318'; ctx.beginPath(); ctx.roundRect(CW*0.04,CH*0.68,CW*0.36,CH*0.13,14); ctx.fill();
+    ctx.fillStyle = '#5C2A12'; ctx.fillRect(CW*0.04,CH*0.57,CW*0.07,CH*0.13); ctx.fillRect(CW*0.33,CH*0.57,CW*0.07,CH*0.13);
+    ctx.fillStyle = '#7E3D20'; ctx.beginPath(); ctx.roundRect(CW*0.02,CH*0.55,CW*0.40,CH*0.055,8); ctx.fill();
+    ctx.fillStyle = '#C4956A'; ctx.beginPath(); ctx.roundRect(CW*0.06,CH*0.66,CW*0.32,CH*0.06,6); ctx.fill();
+    ctx.strokeStyle = '#C8943C'; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(CW*0.50,CH*0.78); ctx.lineTo(CW*0.50,CH*0.30); ctx.stroke();
+    ctx.fillStyle = '#F0B840';
+    ctx.beginPath(); ctx.moveTo(CW*0.32,CH*0.30); ctx.lineTo(CW*0.68,CH*0.30); ctx.lineTo(CW*0.62,CH*0.15); ctx.lineTo(CW*0.38,CH*0.15); ctx.closePath(); ctx.fill();
+    let lg = ctx.createRadialGradient(CW*0.50,CH*0.28,20, CW*0.50,CH*0.28,CW*0.65);
+    lg.addColorStop(0,'rgba(255,205,70,0.22)'); lg.addColorStop(0.5,'rgba(200,110,20,0.08)'); lg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = lg; ctx.fillRect(0,0,CW,CH);
 
   } else if (bg === 'cafe') {
-    const wallG = ctx.createLinearGradient(0,0,0,H);
-    wallG.addColorStop(0,'#1A1F2E'); wallG.addColorStop(1,'#0D1018');
-    ctx.fillStyle=wallG; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#1E2A3A'; ctx.fillRect(W*.04,H*.08,W*.32,H*.55);
-    ctx.strokeStyle='#8AA0B8'; ctx.lineWidth=4; ctx.strokeRect(W*.04,H*.08,W*.32,H*.55);
-    ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(W*.20,H*.08);ctx.lineTo(W*.20,H*.63);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(W*.04,H*.36);ctx.lineTo(W*.36,H*.36);ctx.stroke();
-    ctx.strokeStyle='rgba(150,200,255,0.25)'; ctx.lineWidth=1;
-    for(let i=0;i<50;i++){
-      const rx=W*.04+Math.random()*W*.32, ry=H*.08+Math.random()*H*.55;
-      ctx.beginPath();ctx.moveTo(rx,ry);ctx.lineTo(rx-3,ry+14);ctx.stroke();
+    let g = ctx.createLinearGradient(0,0,0,CH);
+    g.addColorStop(0,'#181C2A'); g.addColorStop(1,'#0C0E16');
+    ctx.fillStyle = g; ctx.fillRect(0,0,CW,CH);
+    ctx.fillStyle = '#1A2535'; ctx.fillRect(CW*0.08,CH*0.04,CW*0.84,CH*0.44);
+    ctx.strokeStyle = '#7A98B0'; ctx.lineWidth = 10;
+    ctx.strokeRect(CW*0.08,CH*0.04,CW*0.84,CH*0.44);
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(CW*0.50,CH*0.04); ctx.lineTo(CW*0.50,CH*0.48); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(CW*0.08,CH*0.26); ctx.lineTo(CW*0.92,CH*0.26); ctx.stroke();
+    ctx.strokeStyle = 'rgba(140,195,255,0.18)'; ctx.lineWidth = 2;
+    for (let i=0; i<100; i++) {
+      let rx=CW*0.08+Math.random()*CW*0.84, ry=CH*0.04+Math.random()*CH*0.44;
+      ctx.beginPath(); ctx.moveTo(rx,ry); ctx.lineTo(rx-6,ry+26); ctx.stroke();
     }
-    const cg=ctx.createRadialGradient(W*.20,H*.36,10,W*.20,H*.36,W*.20);
-    cg.addColorStop(0,'rgba(255,180,80,0.12)'); cg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=cg; ctx.fillRect(W*.04,H*.08,W*.32,H*.55);
-    ctx.fillStyle='#3A2210';
-    ctx.fillRect(W*.05,H*.70,W*.55,H*.08); ctx.fillRect(W*.10,H*.78,W*.08,H*.22); ctx.fillRect(W*.45,H*.78,W*.08,H*.22);
-    ctx.fillStyle='#F5F0E8'; ctx.beginPath();ctx.ellipse(W*.60,H*.74,22,12,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#E8E0D0'; ctx.beginPath();ctx.roundRect(W*.57,H*.62,44,50,4);ctx.fill();
-    ctx.fillStyle='#6B3A2A'; ctx.beginPath();ctx.ellipse(W*.59,H*.64,16,8,0,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='#C8B89A'; ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(W*.63,H*.68,10,0,Math.PI);ctx.stroke();
-    const ig=ctx.createRadialGradient(W*.7,0,20,W*.7,0,W*.6);
-    ig.addColorStop(0,'rgba(255,200,80,0.15)'); ig.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=ig; ctx.fillRect(0,0,W,H);
+    let cg = ctx.createRadialGradient(CW*0.5,CH*0.26,30, CW*0.5,CH*0.26,CW*0.55);
+    cg.addColorStop(0,'rgba(255,170,60,0.14)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = cg; ctx.fillRect(CW*0.08,CH*0.04,CW*0.84,CH*0.44);
+    ctx.fillStyle = '#38200E'; ctx.beginPath(); ctx.roundRect(CW*0.08,CH*0.58,CW*0.84,CH*0.09,10); ctx.fill();
+    ctx.fillRect(CW*0.20,CH*0.67,CW*0.14,CH*0.33); ctx.fillRect(CW*0.66,CH*0.67,CW*0.14,CH*0.33);
+    ctx.fillStyle = '#E0D8C8'; ctx.beginPath(); ctx.roundRect(CW*0.36,CH*0.47,CW*0.28,CH*0.13,8); ctx.fill();
+    ctx.fillStyle = '#5A3020'; ctx.beginPath(); ctx.ellipse(CW*0.50,CH*0.49,CW*0.10,CH*0.025,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#EDE5D5'; ctx.beginPath(); ctx.ellipse(CW*0.50,CH*0.60,CW*0.15,CH*0.022,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#BEB098'; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.arc(CW*0.66,CH*0.535,CW*0.055,-Math.PI/2,Math.PI/2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 4;
+    for (let sx of [CW*0.43,CW*0.50,CW*0.57]) {
+      ctx.beginPath(); ctx.moveTo(sx,CH*0.47); ctx.quadraticCurveTo(sx-18,CH*0.43,sx+5,CH*0.38); ctx.stroke();
+    }
+    ctx.fillStyle = '#7A1A1A'; ctx.beginPath(); ctx.roundRect(CW*0.68,CH*0.54,CW*0.18,CH*0.065,4); ctx.fill();
+    let og = ctx.createRadialGradient(CW*0.5,0,40, CW*0.5,0,CW*0.9);
+    og.addColorStop(0,'rgba(255,195,70,0.14)'); og.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = og; ctx.fillRect(0,0,CW,CH);
 
   } else if (bg === 'night') {
-    const ng=ctx.createLinearGradient(0,0,0,H);
-    ng.addColorStop(0,'#0A0810'); ng.addColorStop(1,'#050408');
-    ctx.fillStyle=ng; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='rgba(200,220,255,0.06)'; ctx.fillRect(W*.60,H*.05,W*.35,H*.50);
-    ctx.strokeStyle='rgba(180,200,240,0.3)'; ctx.lineWidth=3;
-    ctx.strokeRect(W*.60,H*.05,W*.35,H*.50);
-    ctx.beginPath();ctx.moveTo(W*.775,H*.05);ctx.lineTo(W*.775,H*.55);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(W*.60,H*.30);ctx.lineTo(W*.95,H*.30);ctx.stroke();
-    ctx.fillStyle='rgba(240,245,255,0.85)';
-    ctx.beginPath();ctx.arc(W*.775,H*.20,28,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(10,8,16,0.7)';
-    ctx.beginPath();ctx.arc(W*.79,H*.18,26,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.6)';
-    [[.65,.08],[.72,.12],[.68,.18],[.85,.07],[.90,.15],[.88,.22],[.80,.10]].forEach(([sx,sy])=>{
-      ctx.beginPath();ctx.arc(W*sx,H*sy,1.5,0,Math.PI*2);ctx.fill();
-    });
-    ctx.fillStyle='#1A0D05'; ctx.fillRect(0,H*.65,W*.55,H*.35);
-    ctx.fillStyle='#2A1508'; ctx.fillRect(0,H*.62,W*.55,H*.06);
-    ctx.fillStyle='#3A2010';
-    ctx.fillRect(W*.02,H*.50,W*.12,H*.15); ctx.fillRect(W*.02,H*.48,W*.14,H*.05);
-    ctx.strokeStyle='#C8A060'; ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(W*.09,H*.48);ctx.lineTo(W*.09,H*.30);ctx.stroke();
-    ctx.fillStyle='#F5D080';
-    ctx.beginPath();ctx.moveTo(W*.04,H*.30);ctx.lineTo(W*.14,H*.30);ctx.lineTo(W*.12,H*.20);ctx.lineTo(W*.06,H*.20);ctx.closePath();ctx.fill();
-    const lg=ctx.createRadialGradient(W*.09,H*.30,5,W*.09,H*.30,W*.35);
-    lg.addColorStop(0,'rgba(255,210,80,0.22)'); lg.addColorStop(0.4,'rgba(200,120,30,0.08)'); lg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=lg; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#E8D8C0';
-    ctx.beginPath();ctx.roundRect(W*.05,H*.60,W*.22,H*.08,6);ctx.fill();
+    let g = ctx.createLinearGradient(0,0,0,CH);
+    g.addColorStop(0,'#08060E'); g.addColorStop(1,'#040307');
+    ctx.fillStyle = g; ctx.fillRect(0,0,CW,CH);
+    for (let i=0; i<80; i++) {
+      let a = 0.3+Math.random()*0.7, r = Math.random()<0.15?2.5:1.2;
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.beginPath(); ctx.arc(Math.random()*CW,Math.random()*CH*0.40,r,0,Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(238,244,255,0.92)'; ctx.beginPath(); ctx.arc(CW*0.78,CH*0.10,70,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(8,6,14,0.90)'; ctx.beginPath(); ctx.arc(CW*0.84,CH*0.088,65,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(170,195,235,0.05)'; ctx.fillRect(CW*0.52,CH*0.04,CW*0.42,CH*0.40);
+    ctx.strokeStyle = 'rgba(170,195,235,0.22)'; ctx.lineWidth = 8;
+    ctx.strokeRect(CW*0.52,CH*0.04,CW*0.42,CH*0.40);
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(CW*0.73,CH*0.04); ctx.lineTo(CW*0.73,CH*0.44); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(CW*0.52,CH*0.24); ctx.lineTo(CW*0.94,CH*0.24); ctx.stroke();
+    ctx.fillStyle = '#180C04'; ctx.fillRect(0,CH*0.70,CW*0.72,CH*0.30);
+    ctx.fillStyle = '#251406'; ctx.fillRect(0,CH*0.67,CW*0.72,CH*0.045);
+    ctx.fillStyle = '#301808'; ctx.beginPath(); ctx.roundRect(CW*0.04,CH*0.56,CW*0.22,CH*0.13,8); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(CW*0.02,CH*0.54,CW*0.26,CH*0.04,5); ctx.fill();
+    ctx.fillStyle = '#E5D4C0'; ctx.beginPath(); ctx.roundRect(CW*0.07,CH*0.66,CW*0.36,CH*0.05,10); ctx.fill();
+    ctx.fillStyle = '#2A3A5A'; ctx.beginPath(); ctx.roundRect(0,CH*0.72,CW*0.65,CH*0.06,6); ctx.fill();
+    ctx.fillStyle = '#2A1608'; ctx.beginPath(); ctx.roundRect(CW*0.02,CH*0.56,CW*0.22,CH*0.12,5); ctx.fill();
+    ctx.strokeStyle = '#B89040'; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(CW*0.13,CH*0.56); ctx.lineTo(CW*0.13,CH*0.36); ctx.stroke();
+    ctx.fillStyle = '#F0CC60';
+    ctx.beginPath(); ctx.moveTo(CW*0.03,CH*0.36); ctx.lineTo(CW*0.23,CH*0.36); ctx.lineTo(CW*0.20,CH*0.24); ctx.lineTo(CW*0.06,CH*0.24); ctx.closePath(); ctx.fill();
+    let lg = ctx.createRadialGradient(CW*0.13,CH*0.35,15, CW*0.13,CH*0.35,CW*0.6);
+    lg.addColorStop(0,'rgba(255,205,70,0.26)'); lg.addColorStop(0.35,'rgba(195,110,20,0.09)'); lg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = lg; ctx.fillRect(0,0,CW,CH);
+    ctx.fillStyle = '#F0E8D5'; ctx.beginPath(); ctx.roundRect(CW*0.38,CH*0.69,CW*0.28,CH*0.04,4); ctx.fill();
+    ctx.fillStyle = '#DDD5C0'; ctx.beginPath(); ctx.roundRect(CW*0.52,CH*0.69,CW*0.14,CH*0.04,4); ctx.fill();
 
   } else if (bg === 'garden') {
-    const gg=ctx.createLinearGradient(0,0,0,H);
-    gg.addColorStop(0,'#1A2E10'); gg.addColorStop(0.5,'#243A18'); gg.addColorStop(1,'#0D1A08');
-    ctx.fillStyle=gg; ctx.fillRect(0,0,W,H);
-    const sg=ctx.createRadialGradient(W*.85,0,10,W*.85,0,W*.7);
-    sg.addColorStop(0,'rgba(255,230,100,0.20)'); sg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#1A3A0A'; ctx.fillRect(0,H*.70,W,H*.30);
-    ctx.globalAlpha=0.6;
-    const lc=['#1A4A08','#2A6010','#154008','#3A7018'];
-    for(let i=0;i<70;i++){
-      ctx.fillStyle=lc[i%4];
-      ctx.beginPath();
-      ctx.ellipse(Math.random()*W,Math.random()*H*.65,20+Math.random()*35,(15+Math.random()*25)*.5,Math.random()*Math.PI,0,Math.PI*2);
-      ctx.fill();
+    let sky = ctx.createLinearGradient(0,0,0,CH*0.55);
+    sky.addColorStop(0,'#5BA8D8'); sky.addColorStop(1,'#A8D8F0');
+    ctx.fillStyle = sky; ctx.fillRect(0,0,CW,CH*0.55);
+    let ground = ctx.createLinearGradient(0,CH*0.55,0,CH);
+    ground.addColorStop(0,'#2A5C18'); ground.addColorStop(1,'#1A3C0A');
+    ctx.fillStyle = ground; ctx.fillRect(0,CH*0.55,CW,CH*0.45);
+    ctx.fillStyle = 'rgba(255,228,60,0.95)'; ctx.beginPath(); ctx.arc(CW*0.82,CH*0.09,65,0,Math.PI*2); ctx.fill();
+    let sg = ctx.createRadialGradient(CW*0.82,CH*0.09,65, CW*0.82,CH*0.09,CW*0.5);
+    sg.addColorStop(0,'rgba(255,220,60,0.22)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = sg; ctx.fillRect(0,0,CW,CH);
+    ctx.fillStyle = 'rgba(255,255,255,0.80)';
+    for (let [cx2,cy2,rx2,ry2] of [[CW*.18,CH*.08,85,42],[CW*.38,CH*.065,60,30],[CW*.14,CH*.13,50,25]]) {
+      ctx.beginPath(); ctx.ellipse(cx2,cy2,rx2,ry2,0,0,Math.PI*2); ctx.fill();
     }
-    ctx.globalAlpha=1;
-    [[.15,.55],[.25,.60],[.70,.58],[.80,.62],[.90,.55],[.05,.62],[.50,.64]].forEach(([fx,fy])=>{
-      ctx.fillStyle='#F5A0A0'; ctx.beginPath();ctx.arc(W*fx,H*fy,7,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#F5D080'; ctx.beginPath();ctx.arc(W*fx,H*fy,3,0,Math.PI*2);ctx.fill();
-    });
-    ctx.fillStyle='#F5F0E0';
-    ctx.fillRect(W*.06,H*.52,W*.22,H*.18); ctx.fillRect(W*.06,H*.36,W*.04,H*.18);
-    ctx.fillRect(W*.06,H*.34,W*.22,H*.04);
-    ctx.strokeStyle='#D0C8A0'; ctx.lineWidth=1.5;
-    for(let i=0;i<5;i++){
-      ctx.beginPath();ctx.moveTo(W*.06+i*W*.055,H*.34);ctx.lineTo(W*.06+i*W*.055,H*.38);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(W*.06+i*W*.055,H*.52);ctx.lineTo(W*.06+i*W*.055,H*.70);ctx.stroke();
+    ctx.strokeStyle = '#1E4810'; ctx.lineWidth = 3;
+    for (let gx=0; gx<CW; gx+=20) { ctx.beginPath(); ctx.moveTo(gx,CH*0.55); ctx.quadraticCurveTo(gx+8,CH*0.52,gx+16,CH*0.55); ctx.stroke(); }
+    ctx.globalAlpha = 0.65;
+    const leafC = ['#1A4A08','#2A6010','#154008','#3A7018','#4A8020'];
+    for (let i=0; i<100; i++) {
+      ctx.fillStyle = leafC[i%5];
+      ctx.beginPath(); ctx.ellipse(Math.random()*CW,CH*0.42+Math.random()*CH*0.32,28+Math.random()*55,(14+Math.random()*32)*0.55,Math.random()*Math.PI,0,Math.PI*2); ctx.fill();
     }
-    ctx.fillStyle='#8B6040'; ctx.fillRect(W*.34,H*.60,W*.12,H*.04);
-    ctx.fillRect(W*.37,H*.64,W*.02,H*.08); ctx.fillRect(W*.41,H*.64,W*.02,H*.08);
-    ctx.fillStyle='#F5F0E8'; ctx.beginPath();ctx.ellipse(W*.40,H*.60,14,7,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#6B3A2A'; ctx.beginPath();ctx.ellipse(W*.40,H*.59,10,5,0,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha = 1;
+    const flC = ['#F5A0A0','#F5D0A0','#D0A0F5','#F5F0A0','#A0D5F5','#F0A0D0'];
+    for (let [fx,fy] of [[.08,.63],[.16,.68],[.75,.60],[.82,.66],[.90,.58],[.04,.72],[.96,.70],[.48,.74],[.28,.76],[.60,.73]]) {
+      ctx.fillStyle = flC[Math.floor(Math.random()*flC.length)];
+      ctx.beginPath(); ctx.arc(CW*fx,CH*fy,11,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#F5D080'; ctx.beginPath(); ctx.arc(CW*fx,CH*fy,5,0,Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle = '#F2EDD8'; ctx.beginPath(); ctx.roundRect(CW*0.05,CH*0.55,CW*0.38,CH*0.20,12); ctx.fill();
+    ctx.fillRect(CW*0.05,CH*0.41,CW*0.07,CH*0.16); ctx.beginPath(); ctx.roundRect(CW*0.03,CH*0.39,CW*0.42,CH*0.05,7); ctx.fill();
+    ctx.strokeStyle = '#CCC5A0'; ctx.lineWidth = 3;
+    for (let i=0; i<7; i++) {
+      let ix = CW*0.05+i*CW*0.063;
+      ctx.beginPath(); ctx.moveTo(ix,CH*0.39); ctx.lineTo(ix,CH*0.44); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ix,CH*0.55); ctx.lineTo(ix,CH*0.75); ctx.stroke();
+    }
+    ctx.fillStyle = '#7A5030'; ctx.beginPath(); ctx.roundRect(CW*0.46,CH*0.61,CW*0.20,CH*0.04,5); ctx.fill();
+    ctx.fillRect(CW*0.50,CH*0.65,CW*0.04,CH*0.12); ctx.fillRect(CW*0.58,CH*0.65,CW*0.04,CH*0.12);
+    ctx.fillStyle = '#EDE8D8'; ctx.beginPath(); ctx.ellipse(CW*0.56,CH*0.61,CW*0.09,CH*0.022,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#B06830'; ctx.beginPath(); ctx.ellipse(CW*0.56,CH*0.60,CW*0.065,CH*0.016,0,0,Math.PI*2); ctx.fill();
   }
-
-  ctx.restore();
 }
 
-/* ── Logo on canvas ── */
-function drawLogoSmall(ctx, cx, cy, r, s) {
+function drawCard(ctx, sc, hours, mins, pages, pct, title, uname, hasBg) {
+  const PAD = 55;
   ctx.save();
-  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
-  ctx.fillStyle=s.accent; ctx.fill();
-  const bw=r*.95, bh=r*.72;
+  // Card bg
   ctx.beginPath();
-  ctx.moveTo(cx-bw/2,cy+bh/2); ctx.lineTo(cx-bw/2,cy-bh/2+3);
-  ctx.quadraticCurveTo(cx-bw/2+3,cy-bh/2,cx,cy-bh/2); ctx.lineTo(cx,cy+bh/2); ctx.closePath();
-  ctx.fillStyle=s.text; ctx.globalAlpha=.95; ctx.fill();
+  ctx.roundRect(PAD, PAD, CW-PAD*2, CH-PAD*2, 44);
+  ctx.fillStyle = sc.bg;
+  ctx.globalAlpha = hasBg ? 0.93 : 1;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  // Clip
   ctx.beginPath();
-  ctx.moveTo(cx+bw/2,cy+bh/2); ctx.lineTo(cx+bw/2,cy-bh/2+3);
-  ctx.quadraticCurveTo(cx+bw/2-3,cy-bh/2,cx,cy-bh/2); ctx.lineTo(cx,cy+bh/2); ctx.closePath();
-  ctx.fillStyle=s.sub; ctx.globalAlpha=.85; ctx.fill();
-  ctx.globalAlpha=1;
-  ctx.strokeStyle=s.line; ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(cx,cy-bh/2);ctx.lineTo(cx,cy+bh/2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(cx-bw/2,cy+bh/2);ctx.quadraticCurveTo(cx,cy+bh/2+4,cx+bw/2,cy+bh/2);ctx.stroke();
-  ctx.restore();
-}
+  ctx.roundRect(PAD, PAD, CW-PAD*2, CH-PAD*2, 44);
+  ctx.clip();
 
-/* ── Draw card (overlay on bg) ── */
-function drawCard(ctx, W, H, s, hours, mins, pages, pct, title, uname) {
-  const cx=W*.27, cy=H*.07, cw=W*.69, ch=H*.86;
+  const LX = PAD + 70;
+  const RX = CW - PAD - 55;
+
+  // Texture
   ctx.save();
-  ctx.globalAlpha=.94;
-  ctx.beginPath(); ctx.roundRect(cx,cy,cw,ch,18);
-  ctx.fillStyle=s.bg; ctx.fill();
-  ctx.globalAlpha=1;
-  ctx.beginPath(); ctx.roundRect(cx,cy,cw,ch,18); ctx.clip();
-  ctx.globalAlpha=.035; ctx.strokeStyle=s.text; ctx.lineWidth=1;
-  for(let i=-ch;i<cw+ch;i+=22){ctx.beginPath();ctx.moveTo(cx+i,cy);ctx.lineTo(cx+i+ch,cy+ch);ctx.stroke();}
-  ctx.globalAlpha=1;
-  ctx.fillStyle=s.accent; ctx.globalAlpha=.85;
-  ctx.fillRect(cx+14,cy+20,5,ch-40); ctx.globalAlpha=1;
-  const lx=cx+38;
-  drawLogoSmall(ctx,lx+18,cy+52,20,s);
-  ctx.fillStyle=s.text; ctx.font="bold 20px 'Playfair Display',Georgia,serif";
-  ctx.fillText('Reading Room',lx+48,cy+58);
-  ctx.fillStyle=s.sub; ctx.font="400 10px Lato,sans-serif";
-  ctx.fillText('READING SESSION STATS',lx+50,cy+74);
-  ctx.strokeStyle=s.accent; ctx.globalAlpha=.3; ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(lx,cy+90);ctx.lineTo(cx+cw-20,cy+90);ctx.stroke();
-  ctx.globalAlpha=1;
-  const tl=hours>0?`${hours}h ${mins}m`:`${mins}m`;
-  ctx.fillStyle=s.accent; ctx.font="bold 60px 'Playfair Display',Georgia,serif";
-  ctx.fillText(tl,lx,cy+188);
-  ctx.fillStyle=s.sub; ctx.font="400 12px Lato,sans-serif";
-  ctx.fillText('TIME SPENT READING',lx,cy+208);
-  ctx.fillStyle=s.text; ctx.font="bold 42px 'Playfair Display',Georgia,serif";
-  ctx.fillText(`${pages}`,lx,cy+285);
-  ctx.fillStyle=s.sub; ctx.font="400 12px Lato,sans-serif";
-  ctx.fillText('PAGES READ',lx,cy+302);
-  if(pct!==''){
-    ctx.fillStyle=s.text; ctx.font="bold 42px 'Playfair Display',Georgia,serif";
-    ctx.fillText(`${pct}%`,lx+155,cy+285);
-    ctx.fillStyle=s.sub; ctx.font="400 12px Lato,sans-serif";
-    ctx.fillText('COMPLETE',lx+155,cy+302);
-  }
-  ctx.globalAlpha=.07; ctx.strokeStyle=s.text; ctx.lineWidth=2;
-  const bx=cx+cw-75,by=cy+ch*.48,bw2=105,bh2=78;
-  ctx.beginPath();
-  ctx.moveTo(bx,by-bh2/2);ctx.lineTo(bx-bw2/2,by-bh2/2+8);ctx.lineTo(bx-bw2/2,by+bh2/2);
-  ctx.quadraticCurveTo(bx,by+bh2/2+12,bx+bw2/2,by+bh2/2);
-  ctx.lineTo(bx+bw2/2,by-bh2/2+8);ctx.lineTo(bx,by-bh2/2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(bx,by-bh2/2);ctx.lineTo(bx,by+bh2/2+12);ctx.stroke();
-  for(let li=0;li<4;li++){
-    const ly=by-bh2/2+18+li*15;
-    ctx.beginPath();ctx.moveTo(bx-bw2/2+10,ly);ctx.lineTo(bx-8,ly);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(bx+8,ly);ctx.lineTo(bx+bw2/2-10,ly);ctx.stroke();
-  }
-  ctx.globalAlpha=1;
-  if(title){
-    ctx.fillStyle=s.text; ctx.globalAlpha=.8;
-    ctx.font="italic 17px 'Playfair Display',Georgia,serif";
-    ctx.fillText(`"${title.length>36?title.slice(0,34)+'…':title}"`,lx,cy+360);
-    ctx.globalAlpha=1;
-  }
-  if(uname){
-    ctx.fillStyle=s.sub; ctx.font="400 12px Lato,sans-serif";
-    ctx.textAlign='right'; ctx.fillText(uname,cx+cw-18,cy+ch-18); ctx.textAlign='left';
-  }
-  ctx.fillStyle=s.sub; ctx.globalAlpha=.4; ctx.font="400 10px Lato,sans-serif";
-  ctx.fillText('readingroom.community',lx,cy+ch-18); ctx.globalAlpha=1;
+  ctx.globalAlpha = 0.03; ctx.strokeStyle = sc.text; ctx.lineWidth = 2;
+  for (let i=-CH; i<CW+CH; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+CH,CH); ctx.stroke(); }
   ctx.restore();
-}
 
-/* ── Draw card full width (no bg) ── */
-function drawCardFull(ctx, W, H, s, hours, mins, pages, pct, title, uname) {
-  const lx=60;
+  // Accent bar
+  ctx.fillStyle = sc.accent; ctx.globalAlpha = 0.75;
+  ctx.beginPath(); ctx.roundRect(PAD+20,PAD+48,9,CH-PAD*2-96,5); ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Logo
+  const lX = LX+42, lY = PAD+112, lR = 50;
   ctx.save();
-  ctx.beginPath(); ctx.roundRect(20,20,W-40,H-40,18); ctx.clip();
-  ctx.globalAlpha=.04; ctx.strokeStyle=s.text; ctx.lineWidth=1;
-  for(let i=-H;i<W+H;i+=22){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i+H,H);ctx.stroke();}
-  ctx.globalAlpha=1;
-  ctx.fillStyle=s.accent; ctx.globalAlpha=.85;
-  ctx.fillRect(lx-20,40,5,H-80); ctx.globalAlpha=1;
-  drawLogoSmall(ctx,lx+22,75,23,s);
-  ctx.fillStyle=s.text; ctx.font="bold 26px 'Playfair Display',Georgia,serif";
-  ctx.fillText('Reading Room',lx+54,82);
-  ctx.fillStyle=s.sub; ctx.font="400 12px Lato,sans-serif";
-  ctx.fillText('READING SESSION STATS',lx+56,100);
-  ctx.strokeStyle=s.accent; ctx.globalAlpha=.3; ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(lx,120);ctx.lineTo(W-60,120);ctx.stroke();
-  ctx.globalAlpha=1;
-  const tl=hours>0?`${hours}h ${mins}m`:`${mins}m`;
-  ctx.fillStyle=s.accent; ctx.font="bold 80px 'Playfair Display',Georgia,serif";
-  ctx.fillText(tl,lx,258);
-  ctx.fillStyle=s.sub; ctx.font="400 15px Lato,sans-serif";
-  ctx.fillText('TIME SPENT READING',lx,280);
-  ctx.fillStyle=s.text; ctx.font="bold 56px 'Playfair Display',Georgia,serif";
-  ctx.fillText(`${pages}`,lx,370);
-  ctx.fillStyle=s.sub; ctx.font="400 14px Lato,sans-serif";
-  ctx.fillText('PAGES READ',lx,390);
-  if(pct!==''){
-    ctx.fillStyle=s.text; ctx.font="bold 56px 'Playfair Display',Georgia,serif";
-    ctx.fillText(`${pct}%`,lx+240,370);
-    ctx.fillStyle=s.sub; ctx.font="400 14px Lato,sans-serif";
-    ctx.fillText('COMPLETE',lx+240,390);
-  }
-  ctx.globalAlpha=.07; ctx.strokeStyle=s.text; ctx.lineWidth=2;
-  const bx=W-120,by=H/2,bw=130,bh=100;
+  ctx.fillStyle = sc.accent; ctx.globalAlpha = 0.9;
+  ctx.beginPath(); ctx.arc(lX,lY,lR,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha = 1;
+  const bw = lR*0.9, bh = lR*0.68;
+  ctx.beginPath(); ctx.moveTo(lX-bw/2,lY+bh/2); ctx.lineTo(lX-bw/2,lY-bh/2+6); ctx.quadraticCurveTo(lX-bw/2+6,lY-bh/2,lX,lY-bh/2); ctx.lineTo(lX,lY+bh/2); ctx.closePath();
+  ctx.fillStyle = sc.text; ctx.globalAlpha = 0.95; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(lX+bw/2,lY+bh/2); ctx.lineTo(lX+bw/2,lY-bh/2+6); ctx.quadraticCurveTo(lX+bw/2-6,lY-bh/2,lX,lY-bh/2); ctx.lineTo(lX,lY+bh/2); ctx.closePath();
+  ctx.fillStyle = sc.sub; ctx.globalAlpha = 0.85; ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(lX,lY-bh/2); ctx.lineTo(lX,lY+bh/2); ctx.stroke();
+  ctx.restore();
+
+  // Brand
+  ctx.fillStyle = sc.text;
+  ctx.font = "bold 78px 'Playfair Display', Georgia, serif";
+  ctx.fillText('Reading Room', LX+lR*2+18, PAD+102);
+  ctx.fillStyle = sc.sub;
+  ctx.font = "400 33px Lato, sans-serif";
+  ctx.fillText('READING SESSION STATS', LX+lR*2+20, PAD+148);
+
+  // Divider
+  ctx.strokeStyle = sc.accent; ctx.globalAlpha = 0.22; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(LX,PAD+188); ctx.lineTo(RX,PAD+188); ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Big book watermark
+  ctx.save();
+  ctx.globalAlpha = 0.05; ctx.strokeStyle = sc.text; ctx.lineWidth = 5;
+  const [bbx,bby,bbw,bbh] = [CW/2,CH*0.46,520,420];
   ctx.beginPath();
-  ctx.moveTo(bx,by-bh/2);ctx.lineTo(bx-bw/2,by-bh/2+10);ctx.lineTo(bx-bw/2,by+bh/2);
-  ctx.quadraticCurveTo(bx,by+bh/2+14,bx+bw/2,by+bh/2);
-  ctx.lineTo(bx+bw/2,by-bh/2+10);ctx.lineTo(bx,by-bh/2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(bx,by-bh/2);ctx.lineTo(bx,by+bh/2+14);ctx.stroke();
-  for(let li=0;li<5;li++){
-    const ly=by-bh/2+22+li*18;
-    ctx.beginPath();ctx.moveTo(bx-bw/2+12,ly);ctx.lineTo(bx-10,ly);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(bx+10,ly);ctx.lineTo(bx+bw/2-12,ly);ctx.stroke();
+  ctx.moveTo(bbx,bby-bbh/2); ctx.lineTo(bbx-bbw/2,bby-bbh/2+38); ctx.lineTo(bbx-bbw/2,bby+bbh/2);
+  ctx.quadraticCurveTo(bbx,bby+bbh/2+52,bbx+bbw/2,bby+bbh/2);
+  ctx.lineTo(bbx+bbw/2,bby-bbh/2+38); ctx.lineTo(bbx,bby-bbh/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bbx,bby-bbh/2); ctx.lineTo(bbx,bby+bbh/2+52); ctx.stroke();
+  for (let li=0; li<10; li++) {
+    const ly = bby-bbh/2+55+li*40;
+    ctx.beginPath(); ctx.moveTo(bbx-bbw/2+38,ly); ctx.lineTo(bbx-24,ly); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(bbx+24,ly); ctx.lineTo(bbx+bbw/2-38,ly); ctx.stroke();
   }
-  ctx.globalAlpha=1;
-  if(title){
-    ctx.fillStyle=s.text; ctx.globalAlpha=.8;
-    ctx.font="italic 20px 'Playfair Display',Georgia,serif";
-    ctx.fillText(`"${title.length>45?title.slice(0,43)+'…':title}"`,lx,460);
-    ctx.globalAlpha=1;
+  ctx.restore();
+
+  // TIME
+  const timeY = PAD + 395;
+  const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+  ctx.fillStyle = sc.accent;
+  ctx.font = "bold 215px 'Playfair Display', Georgia, serif";
+  ctx.fillText(timeStr, LX, timeY);
+  ctx.fillStyle = sc.sub;
+  ctx.font = "700 40px Lato, sans-serif";
+  ctx.fillText('TIME SPENT READING', LX, timeY+58);
+
+  ctx.strokeStyle = sc.dim; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(LX,timeY+105); ctx.lineTo(RX,timeY+105); ctx.stroke();
+
+  // PAGES + PERCENT
+  const statY = timeY + 278;
+  ctx.fillStyle = sc.text;
+  ctx.font = "bold 158px 'Playfair Display', Georgia, serif";
+  ctx.fillText(`${pages}`, LX, statY);
+  ctx.fillStyle = sc.sub;
+  ctx.font = "700 38px Lato, sans-serif";
+  ctx.fillText('PAGES READ', LX, statY+54);
+
+  if (pct !== '') {
+    ctx.fillStyle = sc.text;
+    ctx.font = "bold 158px 'Playfair Display', Georgia, serif";
+    ctx.fillText(`${pct}%`, LX+480, statY);
+    ctx.fillStyle = sc.sub;
+    ctx.font = "700 38px Lato, sans-serif";
+    ctx.fillText('COMPLETE', LX+480, statY+54);
   }
-  if(uname){
-    ctx.fillStyle=s.sub; ctx.font="400 13px Lato,sans-serif";
-    ctx.textAlign='right'; ctx.fillText(uname,W-60,H-30); ctx.textAlign='left';
+
+  ctx.strokeStyle = sc.dim; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(LX,statY+105); ctx.lineTo(RX,statY+105); ctx.stroke();
+
+  // Book title
+  if (title) {
+    const titY = statY + 208;
+    ctx.fillStyle = sc.accent; ctx.globalAlpha = 0.38;
+    ctx.fillRect(LX, titY-62, 120, 4);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = sc.text;
+    ctx.font = "italic 60px 'Playfair Display', Georgia, serif";
+    const t = title.length > 26 ? title.slice(0,24)+'…' : title;
+    ctx.fillText(`"${t}"`, LX, titY);
   }
-  ctx.fillStyle=s.sub; ctx.globalAlpha=.4; ctx.font="400 11px Lato,sans-serif";
-  ctx.fillText('readingroom.community',lx,H-30); ctx.globalAlpha=1;
+
+  // Dots
+  const dotY = CH - PAD - 132;
+  for (let i=0; i<6; i++) {
+    ctx.fillStyle = sc.accent; ctx.globalAlpha = 0.12 + i*0.09;
+    ctx.beginPath(); ctx.arc(LX+i*38,dotY,6,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Handle
+  if (uname) {
+    ctx.fillStyle = sc.sub;
+    ctx.font = "400 38px Lato, sans-serif";
+    ctx.textAlign = 'right';
+    ctx.fillText(uname, RX, CH-PAD-54);
+    ctx.textAlign = 'left';
+  }
+  // Branding
+  ctx.fillStyle = sc.sub; ctx.globalAlpha = 0.32;
+  ctx.font = "400 30px Lato, sans-serif";
+  ctx.fillText('readingroom.community', LX, CH-PAD-54);
+  ctx.globalAlpha = 1;
+
   ctx.restore();
 }
 
-/* ── Main generate ── */
-function generateCard() {
-  const hours=parseInt(document.getElementById('hours').value)||0;
-  const mins=parseInt(document.getElementById('minutes').value)||0;
-  const pages=parseInt(document.getElementById('pages').value)||0;
-  const pct=document.getElementById('percent').value;
-  const title=document.getElementById('booktitle').value.trim();
-  const uname=document.getElementById('username').value.trim();
-  const s=schemes[currentScheme];
-  const canvas=document.getElementById('card-canvas');
-  const ctx=canvas.getContext('2d');
-  const W=960, H=540;
-  canvas.width=W; canvas.height=H;
+function generate() {
+  const hours = parseInt(document.getElementById('hours').value)||0;
+  const mins  = parseInt(document.getElementById('minutes').value)||0;
+  const pages = parseInt(document.getElementById('pages').value)||0;
+  const pct   = document.getElementById('percent').value.trim();
+  const title = document.getElementById('booktitle').value.trim();
+  const uname = document.getElementById('username').value.trim();
+  const sc    = SCHEMES[scheme];
 
-  if(currentBg==='none'){
-    ctx.clearRect(0,0,W,H);
-    ctx.save();
-    ctx.beginPath(); ctx.roundRect(20,20,W-40,H-40,18);
-    ctx.fillStyle=s.bg; ctx.fill(); ctx.restore();
-    drawCardFull(ctx,W,H,s,hours,mins,pages,pct,title,uname);
-  } else {
-    drawBg(ctx,W,H,currentBg);
-    drawCard(ctx,W,H,s,hours,mins,pages,pct,title,uname);
-  }
+  const canvas = document.getElementById('card-canvas');
+  canvas.width = CW; canvas.height = CH;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,CW,CH);
 
-  const pa=document.getElementById('preview-area');
-  pa.style.display='block';
-  setTimeout(()=>pa.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  if (bgChoice !== 'none') paintBg(ctx, bgChoice);
+  drawCard(ctx, sc, hours, mins, pages, pct, title, uname, bgChoice !== 'none');
+
+  const pa = document.getElementById('preview-area');
+  pa.style.display = 'block';
+  setTimeout(() => pa.scrollIntoView({behavior:'smooth',block:'nearest'}), 80);
 }
 
-/* ── Download (always transparent) ── */
-function downloadCard() {
-  const hours=parseInt(document.getElementById('hours').value)||0;
-  const mins=parseInt(document.getElementById('minutes').value)||0;
-  const pages=parseInt(document.getElementById('pages').value)||0;
-  const pct=document.getElementById('percent').value;
-  const title=document.getElementById('booktitle').value.trim();
-  const uname=document.getElementById('username').value.trim();
-  const s=schemes[currentScheme];
-  const dl=document.createElement('canvas');
-  dl.width=960; dl.height=540;
-  const dctx=dl.getContext('2d');
-  dctx.clearRect(0,0,960,540);
-  dctx.save();
-  dctx.beginPath(); dctx.roundRect(20,20,920,500,18);
-  dctx.fillStyle=s.bg; dctx.fill(); dctx.restore();
-  drawCardFull(dctx,960,540,s,hours,mins,pages,pct,title,uname);
-  const link=document.createElement('a');
-  link.download='reading-room-stats.png';
-  link.href=dl.toDataURL('image/png');
-  link.click();
+function dlCard() {
+  const hours = parseInt(document.getElementById('hours').value)||0;
+  const mins  = parseInt(document.getElementById('minutes').value)||0;
+  const pages = parseInt(document.getElementById('pages').value)||0;
+  const pct   = document.getElementById('percent').value.trim();
+  const title = document.getElementById('booktitle').value.trim();
+  const uname = document.getElementById('username').value.trim();
+  const sc    = SCHEMES[scheme];
+
+  const tmp = document.createElement('canvas');
+  tmp.width = CW; tmp.height = CH;
+  const ctx = tmp.getContext('2d');
+  ctx.clearRect(0,0,CW,CH);
+  drawCard(ctx, sc, hours, mins, pages, pct, title, uname, false);
+
+  const a = document.createElement('a');
+  a.download = 'reading-room-story.png';
+  a.href = tmp.toDataURL('image/png');
+  a.click();
 }
 </script>
 </body>

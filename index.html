@@ -334,7 +334,7 @@ body::after{
   <div class="canvas-shell">
     <canvas id="cv"></canvas>
   </div>
-  <button class="dlbtn" onclick="dlCard()">↓ &nbsp;Download PNG &nbsp;(1080 × 1920)</button>
+  <button class="dlbtn" onclick="dlCard()">↓ &nbsp;Save image &nbsp;·&nbsp; 1080 × 1920</button>
 </div>
 
 <div class="foot">Reading Room · Made for readers</div>
@@ -713,14 +713,48 @@ function generate(){
   prev.style.display='block';
   setTimeout(()=>prev.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
 }
-function dlCard(){
+async function dlCard(){
   const tmp=document.createElement('canvas');
   tmp.width=CW; tmp.height=CH;
   render(tmp.getContext('2d'));
-  const a=document.createElement('a');
-  a.download='reading-room-story.png';
-  a.href=tmp.toDataURL('image/png');
-  a.click();
+
+  const filename='reading-room-story.png';
+  const blob=await new Promise(res=>tmp.toBlob(res,'image/png'));
+
+  /* Mobile: use the native share sheet (has "Save Image" / share to apps) */
+  if(blob && navigator.canShare){
+    try{
+      const file=new File([blob],filename,{type:'image/png'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({files:[file], title:'Reading Room', text:'My Reading Room story'});
+        return;
+      }
+    }catch(e){
+      if(e && e.name==='AbortError') return;   /* user closed the share sheet */
+      /* otherwise fall through to download */
+    }
+  }
+
+  /* Desktop + Android Chrome: blob download */
+  if(blob){
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+    return;
+  }
+
+  /* Last resort (older iOS): open the image so it can be long-pressed and saved */
+  const dataURL=tmp.toDataURL('image/png');
+  const w=window.open();
+  if(w){
+    w.document.title=filename;
+    w.document.body.style.margin='0';
+    w.document.body.innerHTML='<p style="font:14px system-ui;padding:12px;color:#333">Press and hold the image, then choose “Save Image”.</p><img src="'+dataURL+'" style="width:100%">';
+  }else{
+    location.href=dataURL;
+  }
 }
 
 updatePct();

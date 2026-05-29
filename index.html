@@ -227,19 +227,19 @@ body::after{
     <div class="g2">
       <div class="fg">
         <label>Hours</label>
-        <input type="number" id="hours" min="0" max="24" value="9" placeholder="0">
+        <input type="number" id="hours" min="0" max="24" placeholder="e.g. 1">
       </div>
       <div class="fg">
         <label>Minutes</label>
-        <input type="number" id="minutes" min="0" max="59" value="55" placeholder="0">
+        <input type="number" id="minutes" min="0" max="59" placeholder="e.g. 30">
       </div>
       <div class="fg">
         <label>Pages read</label>
-        <input type="number" id="pages" min="0" value="286" placeholder="0" oninput="updatePct()">
+        <input type="number" id="pages" min="0" placeholder="e.g. 174" oninput="updatePct()">
       </div>
       <div class="fg">
         <label>Total pages</label>
-        <input type="number" id="total" min="0" value="286" placeholder="e.g. 320" oninput="updatePct()">
+        <input type="number" id="total" min="0" placeholder="e.g. 285" oninput="updatePct()">
       </div>
       <div class="fg full">
         <label>Book title</label>
@@ -310,12 +310,15 @@ body::after{
   <div class="psec">
     <div class="slabel"><span class="num">IV</span><span class="txt">Text colour</span></div>
     <div class="swatches" id="swatches">
-      <div class="sw on" data-c="white"    style="background:#FFFFFF" title="Ivory · light text"></div>
-      <div class="sw"    data-c="cream"    style="background:#F2E0C0" title="Warm cream"></div>
+      <div class="sw on" data-c="ivory"    style="background:#FFFFFF" title="Ivory · clean"></div>
+      <div class="sw"    data-c="gold"     style="background:linear-gradient(135deg,#FCEEA8,#E9C45A,#B8862E)" title="Gold foil"></div>
+      <div class="sw"    data-c="sunset"   style="background:linear-gradient(135deg,#FFD06B,#FF8A4B,#FF5E84)" title="Sunset gradient"></div>
+      <div class="sw"    data-c="outline"  style="background:radial-gradient(circle,#241608 0 34%,#FFFFFF 37%)" title="Outline · editorial"></div>
       <div class="sw"    data-c="charcoal" style="background:#241608" title="Charcoal · dark text"></div>
+      <div class="sw"    data-c="slate"    style="background:#202632" title="Slate · dark text"></div>
     </div>
-    <div class="palette-name" id="palName">Ivory · light text</div>
-    <p class="hint">Choose whichever reads best over your photo — light text for darker images, charcoal for bright ones. The logo follows the same colour.</p>
+    <div class="palette-name" id="palName">Ivory · clean</div>
+    <p class="hint">Six distinct treatments — clean ivory, metallic gold foil, a warm sunset gradient, outlined editorial type, plus warm charcoal and cool slate for bright photos. The logo follows your choice.</p>
   </div>
 
   <!-- Generate -->
@@ -346,13 +349,31 @@ const _logo=new Image();
 _logo.onload=()=>{logoImgEl=_logo;};
 _logo.src=LOGO_SRC;
 
-/* Text-colour modes */
+/* Text-colour modes — each with a distinct treatment */
 const MODES={
-  white:   {name:'Ivory · light text', text:'#FFFFFF', sub:'rgba(255,255,255,0.86)', accent:'#F4A65C', scrim:'dark',  tint:'#FFFFFF'},
-  cream:   {name:'Warm cream',         text:'#F7E9CF', sub:'rgba(247,233,207,0.82)', accent:'#F0A24E', scrim:'dark',  tint:'#F7E9CF'},
-  charcoal:{name:'Charcoal · dark text',text:'#241608', sub:'rgba(36,22,8,0.72)',     accent:'#C94C1E', scrim:'light', tint:'#241608'},
+  ivory:   {key:'ivory', name:'Ivory · clean',
+            text:'#FFFFFF', sub:'rgba(255,255,255,0.85)', accent:'#F4A65C',
+            scrim:'dark', scrimMul:1, shadowC:'rgba(0,0,0,0.55)', tint:'#FFFFFF'},
+  gold:    {key:'gold', name:'Gold foil',
+            text:'#F3D981', sub:'rgba(243,217,129,0.88)', accent:'#E9C45A',
+            grad:['#FCEEA8','#EAC95F','#B8862E','#F4DB85'], accentGrad:['#FBEAA0','#D8B048'],
+            scrim:'dark', scrimMul:1, shadowC:'rgba(0,0,0,0.62)', tint:'#E9C45A', tintGrad:['#FCEEA8','#D6AC44']},
+  sunset:  {key:'sunset', name:'Sunset gradient',
+            text:'#FF8A4B', sub:'rgba(255,184,124,0.92)', accent:'#FF7E63',
+            grad:['#FFDA82','#FF9A4D','#FF5E84'], accentGrad:['#FFC062','#FF6E84'],
+            scrim:'dark', scrimMul:1, shadowC:'rgba(0,0,0,0.55)', tint:'#FF8A4B', tintGrad:['#FFC264','#FF5E84']},
+  outline: {key:'outline', name:'Outline · editorial',
+            text:'#FFFFFF', sub:'rgba(255,255,255,0.96)', accent:'#FFFFFF',
+            stroke:{color:'rgba(18,10,5,0.92)', w:0.085},
+            scrim:'dark', scrimMul:0.38, shadowC:'rgba(0,0,0,0)', tint:'#FFFFFF', logoStroke:true},
+  charcoal:{key:'charcoal', name:'Charcoal · dark text',
+            text:'#241608', sub:'rgba(36,22,8,0.72)', accent:'#C94C1E',
+            scrim:'light', scrimMul:1, shadowC:'rgba(255,255,255,0.6)', tint:'#241608'},
+  slate:   {key:'slate', name:'Slate · dark text',
+            text:'#202632', sub:'rgba(32,38,50,0.72)', accent:'#4F7384',
+            scrim:'light', scrimMul:1, shadowC:'rgba(255,255,255,0.62)', tint:'#202632'},
 };
-let mode='white';
+let mode='ivory';
 
 document.querySelectorAll('.sw').forEach(s=>{
   s.addEventListener('click',()=>{
@@ -415,15 +436,62 @@ function drawCover(ctx,img){
   ctx.drawImage(img,(CW-w)/2,(CH-h)/2,w,h);
 }
 let _tintCache={};
-function tintedLogo(tint){
-  if(_tintCache[tint]) return _tintCache[tint];
+function _silhouette(){
   const o=document.createElement('canvas');
   o.width=logoImgEl.width; o.height=logoImgEl.height;
   const c=o.getContext('2d');
   c.drawImage(logoImgEl,0,0);
   c.globalCompositeOperation='source-in';
-  c.fillStyle=tint; c.fillRect(0,0,o.width,o.height);
-  _tintCache[tint]=o; return o;
+  return {o,c};
+}
+function tintSolid(color){
+  const key='c:'+color; if(_tintCache[key]) return _tintCache[key];
+  const {o,c}=_silhouette(); c.fillStyle=color; c.fillRect(0,0,o.width,o.height);
+  _tintCache[key]=o; return o;
+}
+function tintedLogo(m){
+  if(_tintCache[m.key]) return _tintCache[m.key];
+  const {o,c}=_silhouette();
+  if(m.tintGrad){
+    const g=c.createLinearGradient(0,0,0,o.height);
+    m.tintGrad.forEach((col,i)=>g.addColorStop(i/(m.tintGrad.length-1),col));
+    c.fillStyle=g;
+  } else c.fillStyle=m.tint;
+  c.fillRect(0,0,o.width,o.height);
+  _tintCache[m.key]=o; return o;
+}
+
+/* gradient spanning a single text line */
+function grad(ctx,stops,y,size){
+  const g=ctx.createLinearGradient(0,y-size*0.92,0,y+size*0.14);
+  stops.forEach((c,i)=>g.addColorStop(stops.length===1?0:i/(stops.length-1),c));
+  return g;
+}
+function paintFor(ctx,m,role,y,size){
+  if(role==='sub') return m.sub;
+  if(role==='accent') return m.accentGrad?grad(ctx,m.accentGrad,y,size):m.accent;
+  return m.grad?grad(ctx,m.grad,y,size):m.text;
+}
+/* unified text drawer: applies gradient fill, outline stroke, or soft shadow */
+function styledText(ctx,m,text,x,y,o){
+  const size=o.size, fam=o.family||"'Outfit', sans-serif";
+  ctx.save();
+  ctx.font=`${o.italic?'italic ':''}${o.weight||'400'} ${size}px ${fam}`;
+  if(o.ls) ctx.letterSpacing=o.ls;
+  if(m.stroke){
+    ctx.save();
+    ctx.lineJoin='round'; ctx.miterLimit=2;
+    ctx.lineWidth=Math.max(2,size*m.stroke.w);
+    ctx.strokeStyle=m.stroke.color;
+    ctx.strokeText(text,x,y);
+    ctx.restore();
+  }else{
+    ctx.shadowColor=m.shadowC; ctx.shadowBlur=o.blur||11; ctx.shadowOffsetY=1;
+  }
+  ctx.fillStyle=paintFor(ctx,m,o.role||'text',y,size);
+  ctx.fillText(text,x,y);
+  if(o.ls) ctx.letterSpacing='0px';
+  ctx.restore();
 }
 function wrapLines(ctx,text,maxW,maxLines){
   const words=text.split(/\s+/); const lines=[]; let line='';
@@ -465,155 +533,159 @@ function drawCard(ctx,m,hours,mins,pages,pct,title,author,handle){
     ctx.fillStyle=rg; ctx.fillRect(0,0,CW,CH);
   }
 
-  /* Legibility scrims */
+  /* Legibility scrims — gentle at top, strong at the bottom; intensity per mode */
   const dark=m.scrim==='dark';
-  const tg=ctx.createLinearGradient(0,0,0,CH*0.40);
-  const bg2=ctx.createLinearGradient(0,CH*0.46,0,CH);
-  if(dark){
-    tg.addColorStop(0,'rgba(8,5,3,0.66)'); tg.addColorStop(1,'rgba(8,5,3,0)');
-    bg2.addColorStop(0,'rgba(8,5,3,0)'); bg2.addColorStop(1,'rgba(8,5,3,0.88)');
-  }else{
-    tg.addColorStop(0,'rgba(250,245,236,0.80)'); tg.addColorStop(1,'rgba(250,245,236,0)');
-    bg2.addColorStop(0,'rgba(250,245,236,0)'); bg2.addColorStop(1,'rgba(250,245,236,0.92)');
-  }
-  ctx.fillStyle=tg; ctx.fillRect(0,0,CW,CH*0.40);
-  ctx.fillStyle=bg2; ctx.fillRect(0,CH*0.46,CW,CH*0.54);
+  const mul=(m.scrimMul==null?1:m.scrimMul);
+  const sc=dark?'8,5,3':'250,245,236';
+  const tg=ctx.createLinearGradient(0,0,0,CH*0.26);
+  tg.addColorStop(0,`rgba(${sc},${(dark?0.34:0.42)*mul})`); tg.addColorStop(1,`rgba(${sc},0)`);
+  const bg2=ctx.createLinearGradient(0,CH*0.34,0,CH);
+  bg2.addColorStop(0,`rgba(${sc},0)`);
+  bg2.addColorStop(0.55,`rgba(${sc},${(dark?0.55:0.62)*mul})`);
+  bg2.addColorStop(1,`rgba(${sc},${(dark?0.92:0.95)*mul})`);
+  ctx.fillStyle=tg; ctx.fillRect(0,0,CW,CH*0.26);
+  ctx.fillStyle=bg2; ctx.fillRect(0,CH*0.34,CW,CH*0.66);
 
   const LX=92, RX=CW-92, CX=CW/2;
-  const shadowC = dark?'rgba(0,0,0,0.55)':'rgba(255,255,255,0.6)';
-
   ctx.textAlign='center'; ctx.textBaseline='alphabetic';
 
-  /* ── TOP STATS ROW ── */
-  const stats=[];
-  stats.push({lbl:'PAGES READ', val:`${pages}`});
-  stats.push({lbl:'TIME SPENT', val: hours>0?`${hours}h ${mins}m`:`${mins}m`});
+  /* Stats data (rendered in a glass bar within the lower block) */
+  const stats=[{lbl:'PAGES', val:`${pages}`},
+               {lbl:'TIME',  val: hours>0?`${hours}h ${mins}m`:`${mins}m`}];
   if(pct!=='') stats.push({lbl:'COMPLETE', val:`${pct}%`});
 
-  const n=stats.length;
-  const colW=(RX-LX)/n;
-  const labelY=176, valueY=270;
-  stats.forEach((s,i)=>{
-    const cx=LX+colW*(i+0.5);
-    ctx.save();
-    ctx.shadowColor=shadowC; ctx.shadowBlur=10; ctx.shadowOffsetY=1;
-    /* label */
-    ctx.fillStyle=m.accent;
-    ctx.font="600 27px 'Outfit', sans-serif";
-    ctx.letterSpacing='0.16em';
-    ctx.fillText(s.lbl,cx,labelY);
-    ctx.letterSpacing='0px';
-    /* value */
-    ctx.fillStyle=m.text;
-    const vs=fitFont(ctx,s.val,colW-26,86,"'Outfit', sans-serif",'800',46);
-    ctx.font=`800 ${vs}px 'Outfit', sans-serif`;
-    ctx.fillText(s.val,cx,valueY);
-    ctx.restore();
-  });
-
-  /* Divider */
-  const divY=330;
-  ctx.save();
-  ctx.strokeStyle=m.accent; ctx.globalAlpha=0.85; ctx.lineWidth=3; ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(CX-95,divY); ctx.lineTo(CX-16,divY); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX+16,divY); ctx.lineTo(CX+95,divY); ctx.stroke();
-  ctx.globalAlpha=1;
-  ctx.fillStyle=m.accent;
-  ctx.save(); ctx.translate(CX,divY); ctx.rotate(Math.PI/4); ctx.fillRect(-6,-6,12,12); ctx.restore();
-  ctx.restore();
-
   /* ── LOGO geometry (reserve bottom space first) ── */
-  const logoW=330;
+  const logoW=320;
   let logoH=0, logoTop=CH-110;
-  if(logoImgEl){ logoH=logoW*(logoImgEl.height/logoImgEl.width); logoTop=CH-104-logoH; }
+  if(logoImgEl){ logoH=logoW*(logoImgEl.height/logoImgEl.width); logoTop=CH-100-logoH; }
 
-  /* ── LOWER CONTENT BLOCK — measured, then bottom-anchored above the logo ── */
+  /* ── LOWER CONTENT BLOCK — hero cover + title + glass stat bar, bottom-anchored ── */
   let coverDims=null;
   if(bookImgEl){
-    const maxW=290, maxH=360;
+    const maxW=440, maxH=600;          /* hero-sized cover */
     const r=Math.min(maxW/bookImgEl.width, maxH/bookImgEl.height);
     coverDims={w:bookImgEl.width*r, h:bookImgEl.height*r};
   }
   let titleLines=[], ts=0;
   if(title){
-    ts=title.length>26?52:62;
+    ts=title.length>26?54:64;
     ctx.font=`italic ${ts}px 'Cormorant Garamond', Georgia, serif`;
     titleLines=wrapLines(ctx,title,RX-LX,2);
   }
-  /* total stack height (increments must match the drawing below) */
-  let H=0;
-  if(coverDims) H+=coverDims.h+54;
-  if(titleLines.length) H+=titleLines.length*(ts+10)+2;
-  if(author) H+=50;
-  if(handle) H+=44;
+  const barW=820, barH=152;
 
-  const limit=(logoImgEl?logoTop:(CH-118))-44;   // content must end here
-  const topRegion=406;                            // and start no higher than this
+  /* total stack height (increments MUST match the drawing order below) */
+  const GAP_COVER=42, GAP_TITLE=4, GAP_AUTHOR=18, GAP_BAR=34, GAP_HANDLE=22;
+  let H=0;
+  if(coverDims) H+=coverDims.h+GAP_COVER;
+  if(titleLines.length) H+=titleLines.length*(ts+8)+GAP_TITLE;
+  if(author) H+=44+GAP_AUTHOR;
+  H+=barH;                              /* stat bar always shown */
+  if(handle) H+=GAP_HANDLE+30;
+
+  const limit=(logoImgEl?logoTop:(CH-118))-40;   /* content ends here */
+  const topRegion=300;
   let cy=Math.max(topRegion, limit-H);
 
-  /* Book cover */
+  /* Book cover (hero) */
   if(coverDims){
     const cw=coverDims.w, ch=coverDims.h, cxL=CX-cw/2, cyT=cy;
     ctx.save();
-    ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=34; ctx.shadowOffsetY=16;
-    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,8); ctx.fillStyle='#000'; ctx.fill();
+    ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=42; ctx.shadowOffsetY=20;
+    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,10); ctx.fillStyle='#000'; ctx.fill();
     ctx.restore();
     ctx.save();
-    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,8); ctx.clip();
+    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,10); ctx.clip();
     ctx.drawImage(bookImgEl,cxL,cyT,cw,ch);
     ctx.restore();
     ctx.save();
-    ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,8); ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,10); ctx.stroke();
     ctx.restore();
-    cy+=ch+54;
+    cy+=ch+GAP_COVER;
   }
 
   /* Title */
   if(titleLines.length){
-    ctx.save();
-    ctx.shadowColor=shadowC; ctx.shadowBlur=12; ctx.shadowOffsetY=1;
-    ctx.fillStyle=m.text;
-    ctx.font=`italic ${ts}px 'Cormorant Garamond', Georgia, serif`;
-    titleLines.forEach(ln=>{ ctx.fillText(ln,CX,cy+ts*0.80); cy+=ts+10; });
-    ctx.restore();
-    cy+=2;
+    titleLines.forEach(ln=>{
+      styledText(ctx,m,ln,CX,cy+ts*0.80,{size:ts,family:"'Cormorant Garamond', Georgia, serif",weight:'500',italic:true,blur:12});
+      cy+=ts+8;
+    });
+    cy+=GAP_TITLE;
   }
 
   /* Author */
   if(author){
-    ctx.save();
-    ctx.shadowColor=shadowC; ctx.shadowBlur=10;
-    ctx.fillStyle=m.sub;
-    ctx.font="300 italic 36px 'Cormorant Garamond', Georgia, serif";
-    ctx.fillText('— '+author, CX, cy+30);
-    ctx.restore();
-    cy+=50;
+    styledText(ctx,m,'— '+author,CX,cy+32,{role:'sub',size:36,family:"'Cormorant Garamond', Georgia, serif",weight:'300',italic:true,blur:10});
+    cy+=44+GAP_AUTHOR;
   }
+
+  /* ── GLASS STAT BAR ── */
+  drawStatBar(ctx,m,dark,CX,cy,barW,barH,stats);
+  cy+=barH;
 
   /* Handle */
   if(handle){
-    ctx.save();
-    ctx.shadowColor=shadowC; ctx.shadowBlur=8;
-    ctx.fillStyle=m.accent;
-    ctx.font="600 24px 'Outfit', sans-serif";
-    ctx.letterSpacing='0.14em';
-    ctx.fillText(handle, CX, cy+24);
-    ctx.letterSpacing='0px';
-    ctx.restore();
-    cy+=44;
+    cy+=GAP_HANDLE;
+    styledText(ctx,m,handle,CX,cy+24,{role:'accent',size:24,weight:'600',ls:'0.16em',blur:8});
+    cy+=30;
   }
 
   /* ── LOGO (bottom centre) ── */
   if(logoImgEl){
     const lx=CX-logoW/2;
-    const tinted=tintedLogo(m.tint);
-    ctx.save();
-    ctx.shadowColor=dark?'rgba(0,0,0,0.45)':'rgba(255,255,255,0.55)';
-    ctx.shadowBlur=20; ctx.shadowOffsetY=2;
-    ctx.drawImage(tinted,lx,logoTop,logoW,logoH);
-    ctx.restore();
+    if(m.logoStroke){
+      const dk=tintSolid('rgba(18,10,5,0.92)'); const o=4;
+      [[-o,-o],[o,-o],[-o,o],[o,o],[-o,0],[o,0],[0,-o],[0,o]].forEach(([dx,dy])=>ctx.drawImage(dk,lx+dx,logoTop+dy,logoW,logoH));
+      ctx.drawImage(tintedLogo(m),lx,logoTop,logoW,logoH);
+    }else{
+      ctx.save();
+      ctx.shadowColor=dark?'rgba(0,0,0,0.45)':'rgba(255,255,255,0.55)';
+      ctx.shadowBlur=20; ctx.shadowOffsetY=2;
+      ctx.drawImage(tintedLogo(m),lx,logoTop,logoW,logoH);
+      ctx.restore();
+    }
   }
+}
+
+/* ── Modern frosted stat bar ── */
+function drawStatBar(ctx,m,dark,cx,topY,w,h,stats){
+  const x=cx-w/2;
+  /* glass panel */
+  ctx.save();
+  ctx.shadowColor=dark?'rgba(0,0,0,0.40)':'rgba(120,70,40,0.20)';
+  ctx.shadowBlur=30; ctx.shadowOffsetY=12;
+  ctx.beginPath(); ctx.roundRect(x,topY,w,h,26);
+  ctx.fillStyle=dark?'rgba(20,12,7,0.40)':'rgba(255,252,245,0.62)';
+  ctx.fill();
+  ctx.restore();
+  /* hairline border + top sheen */
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(x,topY,w,h,26);
+  ctx.lineWidth=1.5;
+  ctx.strokeStyle=dark?'rgba(255,255,255,0.16)':'rgba(120,70,40,0.20)';
+  ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(x+1.5,topY+1.5,w-3,h-3,24);
+  ctx.lineWidth=1; ctx.strokeStyle=dark?'rgba(255,255,255,0.08)':'rgba(255,255,255,0.5)';
+  ctx.stroke();
+  ctx.restore();
+
+  const n=stats.length, cw=w/n;
+  ctx.textAlign='center';
+  stats.forEach((s,i)=>{
+    const ccx=x+cw*(i+0.5);
+    if(i>0){
+      ctx.save();
+      ctx.strokeStyle=m.accent; ctx.globalAlpha=0.32; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(x+cw*i, topY+28); ctx.lineTo(x+cw*i, topY+h-28); ctx.stroke();
+      ctx.restore();
+    }
+    /* big number (gradient / stroke aware) */
+    const vs=fitFont(ctx,s.val,cw-30,60,"'Outfit', sans-serif",'800',36);
+    styledText(ctx,m,s.val,ccx,topY+78,{size:vs,weight:'800',blur:8});
+    /* small label */
+    styledText(ctx,m,s.lbl,ccx,topY+h-26,{role:'accent',size:19,weight:'600',ls:'0.18em',blur:6});
+  });
 }
 
 /* ── Read form + render ── */

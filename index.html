@@ -183,6 +183,22 @@ body::after{
 .foot{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:3.5rem;font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:rgba(247,238,220,0.22);font-family:'Outfit',sans-serif;font-weight:500}
 .foot::before,.foot::after{content:'';width:34px;height:1px;background:linear-gradient(90deg,transparent,rgba(194,154,91,0.45),transparent)}
 
+
+/* ── 3D preview stage ── */
+.canvas-stage{perspective:1400px;max-width:300px;margin:0 auto}
+.canvas-stage .canvas-shell{max-width:none;margin:0;position:relative;transform-style:preserve-3d;will-change:transform;transition:transform .35s cubic-bezier(.22,.61,.36,1),box-shadow .35s}
+.canvas-stage:hover .canvas-shell{box-shadow:0 40px 110px rgba(0,0,0,0.8),0 0 0 1px rgba(194,154,91,0.5),0 0 80px rgba(214,150,72,0.16),0 0 0 7px rgba(194,154,91,0.08)}
+.canvas-shell .sheen{position:absolute;inset:0;border-radius:18px;pointer-events:none;z-index:2;opacity:0;transition:opacity .3s;background:radial-gradient(440px circle at var(--mx,50%) var(--my,35%),rgba(255,232,190,0.16),transparent 62%)}
+.canvas-stage:hover .sheen{opacity:1}
+
+/* glow-breathing generate button */
+.genbtn{animation:btnbreathe 3.4s ease-in-out infinite}
+@keyframes btnbreathe{
+  0%,100%{box-shadow:0 8px 28px rgba(92,47,32,0.5),0 1px 0 rgba(255,255,255,0.12) inset,0 0 0 rgba(232,168,64,0)}
+  50%{box-shadow:0 10px 36px rgba(92,47,32,0.62),0 1px 0 rgba(255,255,255,0.12) inset,0 0 42px rgba(232,168,64,0.22)}
+}
+.dlbtn{background:linear-gradient(135deg,rgba(201,76,30,0.14),rgba(196,123,74,0.07));backdrop-filter:blur(6px)}
+
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}.hdr,.masthead-rule,.panel{opacity:1!important}}
 </style>
@@ -331,8 +347,11 @@ body::after{
 <!-- Preview -->
 <div id="prev">
   <div class="prev-lbl">Your Story Card</div>
-  <div class="canvas-shell">
-    <canvas id="cv"></canvas>
+  <div class="canvas-stage" id="stage">
+    <div class="canvas-shell" id="shell">
+      <div class="sheen"></div>
+      <canvas id="cv"></canvas>
+    </div>
   </div>
   <button class="dlbtn" onclick="dlCard()">↓ &nbsp;Save image &nbsp;·&nbsp; 1080 × 1920</button>
 </div>
@@ -517,121 +536,289 @@ function fitFont(ctx,text,maxW,start,family,weight,min){
   return sz;
 }
 
+/* ── Card decoration helpers ── */
+let _grainTile=null;
+function filmGrain(ctx){
+  if(!_grainTile){
+    const o=document.createElement('canvas'); o.width=o.height=256;
+    const c=o.getContext('2d'); const id=c.createImageData(256,256);
+    for(let i=0;i<id.data.length;i+=4){
+      const v=(Math.random()*255)|0;
+      id.data[i]=id.data[i+1]=id.data[i+2]=v; id.data[i+3]=255;
+    }
+    c.putImageData(id,0,0); _grainTile=o;
+  }
+  ctx.save();
+  ctx.globalAlpha=0.05; ctx.globalCompositeOperation='overlay';
+  for(let y=0;y<CH;y+=256) for(let x=0;x<CW;x+=256) ctx.drawImage(_grainTile,x,y);
+  ctx.restore();
+}
+function vignette(ctx,dark){
+  const g=ctx.createRadialGradient(CW/2,CH*0.46,CH*0.22,CW/2,CH*0.5,CH*0.82);
+  g.addColorStop(0,'rgba(0,0,0,0)');
+  g.addColorStop(1, dark?'rgba(0,0,0,0.42)':'rgba(70,45,25,0.18)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,CW,CH);
+}
+function diamondShape(ctx,x,y,s,fill){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(Math.PI/4);
+  ctx.fillStyle=fill; ctx.fillRect(-s/2,-s/2,s,s); ctx.restore();
+}
+function accentPaint(ctx,m,y,size){ return m.accentGrad?grad(ctx,m.accentGrad,y,size):m.accent; }
+
+/* double keepsake border, like a pressed bookplate */
+function keepsakeFrame(ctx,m,dark){
+  const inset=44,r=34;
+  const line=dark?'rgba(255,255,255,0.30)':'rgba(60,35,18,0.34)';
+  ctx.save();
+  ctx.strokeStyle=line; ctx.lineWidth=2;
+  ctx.shadowColor=dark?'rgba(0,0,0,0.35)':'rgba(255,255,255,0.45)'; ctx.shadowBlur=6;
+  ctx.beginPath(); ctx.roundRect(inset,inset,CW-inset*2,CH-inset*2,r); ctx.stroke();
+  ctx.restore();
+  ctx.save();
+  ctx.globalAlpha=0.5; ctx.strokeStyle=line; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(inset+9,inset+9,CW-(inset+9)*2,CH-(inset+9)*2,r-8); ctx.stroke();
+  ctx.restore();
+}
+
+/* session date in small caps with diamond rules */
+function dateEyebrow(ctx,m,dark){
+  const dateStr=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+  const y=150, cx=CW/2;
+  ctx.save(); ctx.textAlign='center';
+  styledText(ctx,m,dateStr,cx,y,{role:'accent',size:26,weight:'600',ls:'0.30em',blur:8});
+  ctx.font="600 26px 'Outfit', sans-serif";
+  let w;
+  try{ ctx.letterSpacing='0.30em'; w=ctx.measureText(dateStr).width; ctx.letterSpacing='0px'; }
+  catch(e){ w=ctx.measureText(dateStr).width*1.3; }
+  const lineCol=dark?'rgba(255,255,255,0.35)':'rgba(60,35,18,0.35)';
+  const acc=accentPaint(ctx,m,y,26);
+  [-1,1].forEach(s=>{
+    const x0=cx+s*(w/2+38), x1=cx+s*(w/2+126);
+    ctx.strokeStyle=lineCol; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(x0,y-9); ctx.lineTo(x1,y-9); ctx.stroke();
+    diamondShape(ctx,cx+s*(w/2+26),y-9,9,acc);
+  });
+  ctx.restore();
+}
+
+/* small ornamental divider above the title */
+function titleOrnament(ctx,m,dark,cx,y){
+  const acc=accentPaint(ctx,m,y,20);
+  const lineCol=dark?'rgba(255,255,255,0.42)':'rgba(60,35,18,0.42)';
+  ctx.save();
+  ctx.strokeStyle=lineCol; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(cx-130,y); ctx.lineTo(cx-34,y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+34,y); ctx.lineTo(cx+130,y); ctx.stroke();
+  diamondShape(ctx,cx,y,12,acc);
+  diamondShape(ctx,cx-20,y,6,acc);
+  diamondShape(ctx,cx+20,y,6,acc);
+  ctx.restore();
+}
+
+/* hero book cover with 3D tilt, page block, spine shading, gloss + mirror reflection */
+function drawCover3D(ctx,m,dark,cx,topY,cw,ch){
+  const tilt=-0.052, edge=16, r=12;
+  const cyMid=topY+ch/2;
+
+  /* warm halo behind the book so it pops off the photo */
+  const halo=ctx.createRadialGradient(cx,cyMid,30,cx,cyMid,cw*1.15);
+  halo.addColorStop(0, dark?'rgba(244,166,92,0.30)':'rgba(255,255,255,0.55)');
+  halo.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.save(); ctx.fillStyle=halo;
+  ctx.fillRect(cx-cw*1.35, cyMid-ch*0.9, cw*2.7, ch*1.8);
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(cx,cyMid); ctx.rotate(tilt);
+
+  /* soft ambient drop shadow */
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,0.52)'; ctx.shadowBlur=80; ctx.shadowOffsetY=42;
+  ctx.beginPath(); ctx.roundRect(-cw/2,-ch/2,cw,ch,r); ctx.fillStyle='rgba(0,0,0,0.9)'; ctx.fill();
+  ctx.restore();
+
+  /* page block peeking out on the right */
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(-cw/2+8,-ch/2+5,cw-8+edge,ch-10,r);
+  const pg=ctx.createLinearGradient(cw/2-4,0,cw/2+edge,0);
+  pg.addColorStop(0,'#E7DFCC'); pg.addColorStop(0.45,'#FBF5E6'); pg.addColorStop(1,'#CFC3A8');
+  ctx.fillStyle=pg; ctx.fill();
+  ctx.strokeStyle='rgba(110,90,60,0.28)'; ctx.lineWidth=1;
+  for(let i=4;i<edge;i+=3.5){
+    ctx.beginPath(); ctx.moveTo(cw/2+i-2,-ch/2+12); ctx.lineTo(cw/2+i-2,ch/2-12); ctx.stroke();
+  }
+  ctx.restore();
+
+  /* cover art with spine crease and diagonal gloss */
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(-cw/2,-ch/2,cw,ch,r); ctx.clip();
+  ctx.drawImage(bookImgEl,-cw/2,-ch/2,cw,ch);
+  const sg=ctx.createLinearGradient(-cw/2,0,-cw/2+52,0);
+  sg.addColorStop(0,'rgba(0,0,0,0.42)'); sg.addColorStop(0.4,'rgba(255,255,255,0.14)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=sg; ctx.fillRect(-cw/2,-ch/2,52,ch);
+  const gl=ctx.createLinearGradient(-cw/2,-ch/2,cw/2,ch/2);
+  gl.addColorStop(0,'rgba(255,255,255,0.20)'); gl.addColorStop(0.30,'rgba(255,255,255,0)');
+  ctx.fillStyle=gl; ctx.fillRect(-cw/2,-ch/2,cw,ch);
+  ctx.restore();
+
+  /* crisp light edge */
+  ctx.beginPath(); ctx.roundRect(-cw/2,-ch/2,cw,ch,r);
+  ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.restore();
+
+  /* mirrored reflection fading out below */
+  const reflH=Math.max(8,Math.round(ch*0.26)), w=Math.ceil(cw);
+  const o=document.createElement('canvas'); o.width=w; o.height=reflH;
+  const c=o.getContext('2d');
+  c.save(); c.scale(1,-1); c.drawImage(bookImgEl,0,-ch,cw,ch); c.restore();
+  const fade=c.createLinearGradient(0,0,0,reflH);
+  fade.addColorStop(0,'rgba(0,0,0,0.30)'); fade.addColorStop(1,'rgba(0,0,0,0)');
+  c.globalCompositeOperation='destination-in';
+  c.fillStyle=fade; c.fillRect(0,0,w,reflH);
+  ctx.save();
+  ctx.translate(cx,topY+ch+8); ctx.rotate(tilt);
+  ctx.drawImage(o,-cw/2,0);
+  ctx.restore();
+}
+
+/* gradient progress donut */
+function donutRing(ctx,m,dark,cx,cy,r,pct){
+  ctx.save();
+  ctx.lineWidth=11; ctx.lineCap='round';
+  ctx.strokeStyle=dark?'rgba(255,255,255,0.16)':'rgba(60,35,18,0.16)';
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  const start=-Math.PI/2, end=start+Math.PI*2*Math.max(0.02,Math.min(100,pct)/100);
+  const stops=m.accentGrad||m.grad||[m.accent,m.accent];
+  const g=ctx.createLinearGradient(cx-r,cy-r,cx+r,cy+r);
+  stops.forEach((col,i)=>g.addColorStop(stops.length===1?0:i/(stops.length-1),col));
+  ctx.strokeStyle=g;
+  ctx.shadowColor=m.accent; ctx.shadowBlur=16;
+  ctx.beginPath(); ctx.arc(cx,cy,r,start,end); ctx.stroke();
+  ctx.restore();
+}
+
 /* ── Draw the story card ── */
 function drawCard(ctx,m,hours,mins,pages,pct,title,author,handle){
   ctx.clearRect(0,0,CW,CH);
+  const dark=m.scrim==='dark';
+  const mul=(m.scrimMul==null?1:m.scrimMul);
 
-  /* Background photo (or warm fallback) */
+  /* Background photo (or warm candle-lit fallback) */
   if(bgImgEl){ drawCover(ctx,bgImgEl); }
   else{
     const g=ctx.createLinearGradient(0,0,0,CH);
     g.addColorStop(0,'#241307'); g.addColorStop(.55,'#160C05'); g.addColorStop(1,'#0B0603');
     ctx.fillStyle=g; ctx.fillRect(0,0,CW,CH);
-    /* candle glow */
-    const rg=ctx.createRadialGradient(CW*.5,CH*.32,40,CW*.5,CH*.32,CW*.9);
-    rg.addColorStop(0,'rgba(214,140,58,0.18)'); rg.addColorStop(1,'rgba(0,0,0,0)');
+    const rg=ctx.createRadialGradient(CW*.5,CH*.30,40,CW*.5,CH*.30,CW*.95);
+    rg.addColorStop(0,'rgba(214,140,58,0.22)'); rg.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=rg; ctx.fillRect(0,0,CW,CH);
   }
 
-  /* Legibility scrims — gentle at top, strong at the bottom; intensity per mode */
-  const dark=m.scrim==='dark';
-  const mul=(m.scrimMul==null?1:m.scrimMul);
+  /* cinematic scrims */
   const sc=dark?'8,5,3':'250,245,236';
-  const tg=ctx.createLinearGradient(0,0,0,CH*0.26);
-  tg.addColorStop(0,`rgba(${sc},${(dark?0.34:0.42)*mul})`); tg.addColorStop(1,`rgba(${sc},0)`);
-  const bg2=ctx.createLinearGradient(0,CH*0.34,0,CH);
+  const tg=ctx.createLinearGradient(0,0,0,CH*0.28);
+  tg.addColorStop(0,`rgba(${sc},${(dark?0.40:0.46)*mul})`); tg.addColorStop(1,`rgba(${sc},0)`);
+  const bg2=ctx.createLinearGradient(0,CH*0.32,0,CH);
   bg2.addColorStop(0,`rgba(${sc},0)`);
   bg2.addColorStop(0.55,`rgba(${sc},${(dark?0.55:0.62)*mul})`);
-  bg2.addColorStop(1,`rgba(${sc},${(dark?0.92:0.95)*mul})`);
-  ctx.fillStyle=tg; ctx.fillRect(0,0,CW,CH*0.26);
-  ctx.fillStyle=bg2; ctx.fillRect(0,CH*0.34,CW,CH*0.66);
+  bg2.addColorStop(1,`rgba(${sc},${(dark?0.94:0.96)*mul})`);
+  ctx.fillStyle=tg; ctx.fillRect(0,0,CW,CH*0.28);
+  ctx.fillStyle=bg2; ctx.fillRect(0,CH*0.32,CW,CH*0.68);
 
-  const LX=92, RX=CW-92, CX=CW/2;
+  vignette(ctx,dark);
+
+  const LX=110, RX=CW-110, CX=CW/2;
   ctx.textAlign='center'; ctx.textBaseline='alphabetic';
 
-  /* Stats data (rendered in a glass bar within the lower block) */
+  keepsakeFrame(ctx,m,dark);
+  dateEyebrow(ctx,m,dark);
+
   const stats=[{lbl:'PAGES', val:`${pages}`},
                {lbl:'TIME',  val: hours>0?`${hours}h ${mins}m`:`${mins}m`}];
-  if(pct!=='') stats.push({lbl:'COMPLETE', val:`${pct}%`});
+  if(pct!=='') stats.push({lbl:'COMPLETE', val:`${pct}%`, ring:true});
 
-  /* ── LOGO geometry (reserve bottom space first) ── */
+  /* logo geometry — reserve bottom space first */
   const logoW=320;
-  let logoH=0, logoTop=CH-110;
-  if(logoImgEl){ logoH=logoW*(logoImgEl.height/logoImgEl.width); logoTop=CH-100-logoH; }
+  let logoH=0, logoTop=CH-120;
+  if(logoImgEl){ logoH=logoW*(logoImgEl.height/logoImgEl.width); logoTop=CH-110-logoH; }
 
-  /* ── LOWER CONTENT BLOCK — hero cover + title + glass stat bar, bottom-anchored ── */
+  /* measure the lower stack */
   let coverDims=null;
   if(bookImgEl){
-    const maxW=440, maxH=600;          /* hero-sized cover */
+    const maxW=460, maxH=620;
     const r=Math.min(maxW/bookImgEl.width, maxH/bookImgEl.height);
     coverDims={w:bookImgEl.width*r, h:bookImgEl.height*r};
   }
   let titleLines=[], ts=0;
   if(title){
-    ts=title.length>26?54:64;
+    ts=title.length>26?56:68;
     ctx.font=`italic ${ts}px 'Cormorant Garamond', Georgia, serif`;
     titleLines=wrapLines(ctx,title,RX-LX,2);
   }
-  const barW=820, barH=152;
+  const hasRing=stats.some(s=>s.ring);
+  const barW=840, barH=hasRing?176:156;
 
-  /* total stack height (increments MUST match the drawing order below) */
-  const GAP_COVER=42, GAP_TITLE=4, GAP_AUTHOR=18, GAP_BAR=34, GAP_HANDLE=22;
+  const GAP_COVER=46, ORN=46, GAP_TITLE=6, GAP_AUTHOR=20, GAP_HANDLE=26;
+  const reflRoom=coverDims?Math.round(coverDims.h*0.15):0;
+
   let H=0;
-  if(coverDims) H+=coverDims.h+GAP_COVER;
-  if(titleLines.length) H+=titleLines.length*(ts+8)+GAP_TITLE;
-  if(author) H+=44+GAP_AUTHOR;
-  H+=barH;                              /* stat bar always shown */
-  if(handle) H+=GAP_HANDLE+30;
+  if(coverDims) H+=coverDims.h + reflRoom + GAP_COVER;
+  if(titleLines.length) H+=ORN + titleLines.length*(ts+8) + GAP_TITLE;
+  if(author) H+=46+GAP_AUTHOR;
+  H+=barH;
+  if(handle) H+=GAP_HANDLE+38;
 
-  const limit=(logoImgEl?logoTop:(CH-118))-40;   /* content ends here */
-  const topRegion=300;
+  const limit=(logoImgEl?logoTop:(CH-130))-44;
+  const topRegion=320;
   let cy=Math.max(topRegion, limit-H);
 
-  /* Book cover (hero) */
+  /* hero book cover */
   if(coverDims){
-    const cw=coverDims.w, ch=coverDims.h, cxL=CX-cw/2, cyT=cy;
-    ctx.save();
-    ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=42; ctx.shadowOffsetY=20;
-    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,10); ctx.fillStyle='#000'; ctx.fill();
-    ctx.restore();
-    ctx.save();
-    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,10); ctx.clip();
-    ctx.drawImage(bookImgEl,cxL,cyT,cw,ch);
-    ctx.restore();
-    ctx.save();
-    ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.roundRect(cxL,cyT,cw,ch,10); ctx.stroke();
-    ctx.restore();
-    cy+=ch+GAP_COVER;
+    drawCover3D(ctx,m,dark,CX,cy,coverDims.w,coverDims.h);
+    cy+=coverDims.h + reflRoom + GAP_COVER;
   }
 
-  /* Title */
+  /* ornament + title */
   if(titleLines.length){
+    titleOrnament(ctx,m,dark,CX,cy+12);
+    cy+=ORN;
     titleLines.forEach(ln=>{
-      styledText(ctx,m,ln,CX,cy+ts*0.80,{size:ts,family:"'Cormorant Garamond', Georgia, serif",weight:'500',italic:true,blur:12});
+      styledText(ctx,m,ln,CX,cy+ts*0.80,{size:ts,family:"'Cormorant Garamond', Georgia, serif",weight:'500',italic:true,blur:13});
       cy+=ts+8;
     });
     cy+=GAP_TITLE;
   }
 
-  /* Author */
+  /* author */
   if(author){
-    styledText(ctx,m,'— '+author,CX,cy+32,{role:'sub',size:36,family:"'Cormorant Garamond', Georgia, serif",weight:'300',italic:true,blur:10});
-    cy+=44+GAP_AUTHOR;
+    styledText(ctx,m,'\u2014 '+author+' \u2014',CX,cy+34,{role:'sub',size:38,family:"'Cormorant Garamond', Georgia, serif",weight:'300',italic:true,blur:10});
+    cy+=46+GAP_AUTHOR;
   }
 
-  /* ── GLASS STAT BAR ── */
-  drawStatBar(ctx,m,dark,CX,cy,barW,barH,stats);
+  /* glass stat bar with progress ring */
+  drawStatBar(ctx,m,dark,CX,cy,barW,barH,stats,pct===''?0:pct);
   cy+=barH;
 
-  /* Handle */
+  /* handle in a pill badge */
   if(handle){
     cy+=GAP_HANDLE;
-    styledText(ctx,m,handle,CX,cy+24,{role:'accent',size:24,weight:'600',ls:'0.16em',blur:8});
-    cy+=30;
+    ctx.save();
+    ctx.font="600 26px 'Outfit', sans-serif";
+    let tw;
+    try{ ctx.letterSpacing='0.14em'; tw=ctx.measureText(handle).width; ctx.letterSpacing='0px'; }
+    catch(e){ tw=ctx.measureText(handle).width*1.14; }
+    const pw=tw+76, ph=54, px=CX-pw/2, py=cy-10;
+    ctx.beginPath(); ctx.roundRect(px,py,pw,ph,27);
+    ctx.fillStyle=dark?'rgba(20,12,7,0.42)':'rgba(255,252,245,0.62)';
+    ctx.fill();
+    ctx.lineWidth=1.5; ctx.globalAlpha=0.85;
+    ctx.strokeStyle=accentPaint(ctx,m,py+ph,26); ctx.stroke();
+    ctx.restore();
+    styledText(ctx,m,handle,CX,cy+26,{role:'accent',size:26,weight:'600',ls:'0.14em',blur:8});
+    cy+=38;
   }
 
-  /* ── LOGO (bottom centre) ── */
+  /* logo (bottom centre) */
   if(logoImgEl){
     const lx=CX-logoW/2;
     if(m.logoStroke){
@@ -646,45 +833,59 @@ function drawCard(ctx,m,hours,mins,pages,pct,title,author,handle){
       ctx.restore();
     }
   }
+
+  /* finishing film grain */
+  filmGrain(ctx);
 }
 
-/* ── Modern frosted stat bar ── */
-function drawStatBar(ctx,m,dark,cx,topY,w,h,stats){
+/* ── Frosted-glass stat bar ── */
+function drawStatBar(ctx,m,dark,cx,topY,w,h,stats,pct){
   const x=cx-w/2;
   /* glass panel */
   ctx.save();
-  ctx.shadowColor=dark?'rgba(0,0,0,0.40)':'rgba(120,70,40,0.20)';
-  ctx.shadowBlur=30; ctx.shadowOffsetY=12;
-  ctx.beginPath(); ctx.roundRect(x,topY,w,h,26);
-  ctx.fillStyle=dark?'rgba(20,12,7,0.40)':'rgba(255,252,245,0.62)';
+  ctx.shadowColor=dark?'rgba(0,0,0,0.45)':'rgba(120,70,40,0.22)';
+  ctx.shadowBlur=34; ctx.shadowOffsetY=14;
+  ctx.beginPath(); ctx.roundRect(x,topY,w,h,30);
+  ctx.fillStyle=dark?'rgba(20,12,7,0.44)':'rgba(255,252,245,0.66)';
   ctx.fill();
   ctx.restore();
   /* hairline border + top sheen */
   ctx.save();
-  ctx.beginPath(); ctx.roundRect(x,topY,w,h,26);
+  ctx.beginPath(); ctx.roundRect(x,topY,w,h,30);
   ctx.lineWidth=1.5;
-  ctx.strokeStyle=dark?'rgba(255,255,255,0.16)':'rgba(120,70,40,0.20)';
+  ctx.strokeStyle=dark?'rgba(255,255,255,0.18)':'rgba(120,70,40,0.22)';
   ctx.stroke();
-  ctx.beginPath(); ctx.roundRect(x+1.5,topY+1.5,w-3,h-3,24);
-  ctx.lineWidth=1; ctx.strokeStyle=dark?'rgba(255,255,255,0.08)':'rgba(255,255,255,0.5)';
-  ctx.stroke();
+  const sheen=ctx.createLinearGradient(0,topY,0,topY+h*0.5);
+  sheen.addColorStop(0,dark?'rgba(255,255,255,0.10)':'rgba(255,255,255,0.65)');
+  sheen.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.beginPath(); ctx.roundRect(x+2,topY+2,w-4,h*0.5,28);
+  ctx.fillStyle=sheen; ctx.globalAlpha=0.8; ctx.fill();
   ctx.restore();
 
-  const n=stats.length, cw=w/n;
+  const n=stats.length, cw2=w/n;
   ctx.textAlign='center';
   stats.forEach((s,i)=>{
-    const ccx=x+cw*(i+0.5);
+    const ccx=x+cw2*(i+0.5);
     if(i>0){
       ctx.save();
-      ctx.strokeStyle=m.accent; ctx.globalAlpha=0.32; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.moveTo(x+cw*i, topY+28); ctx.lineTo(x+cw*i, topY+h-28); ctx.stroke();
+      const dg=ctx.createLinearGradient(0,topY+24,0,topY+h-24);
+      dg.addColorStop(0,'rgba(0,0,0,0)');
+      dg.addColorStop(0.5,m.accent);
+      dg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.strokeStyle=dg; ctx.globalAlpha=0.45; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(x+cw2*i,topY+24); ctx.lineTo(x+cw2*i,topY+h-24); ctx.stroke();
       ctx.restore();
     }
-    /* big number (gradient / stroke aware) */
-    const vs=fitFont(ctx,s.val,cw-30,60,"'Outfit', sans-serif",'800',36);
-    styledText(ctx,m,s.val,ccx,topY+78,{size:vs,weight:'800',blur:8});
-    /* small label */
-    styledText(ctx,m,s.lbl,ccx,topY+h-26,{role:'accent',size:19,weight:'600',ls:'0.18em',blur:6});
+    if(s.ring){
+      const ry=topY+h/2-12;
+      donutRing(ctx,m,dark,ccx,ry,52,pct);
+      styledText(ctx,m,s.val,ccx,ry+12,{size:34,weight:'800',blur:6});
+      styledText(ctx,m,s.lbl,ccx,topY+h-22,{role:'accent',size:18,weight:'600',ls:'0.18em',blur:6});
+    }else{
+      const vs=fitFont(ctx,s.val,cw2-36,62,"'Outfit', sans-serif",'800',36);
+      styledText(ctx,m,s.val,ccx,topY+86,{size:vs,weight:'800',blur:8});
+      styledText(ctx,m,s.lbl,ccx,topY+h-26,{role:'accent',size:19,weight:'600',ls:'0.18em',blur:6});
+    }
   });
 }
 
@@ -756,6 +957,23 @@ async function dlCard(){
     location.href=dataURL;
   }
 }
+
+
+/* ── 3D tilt on the preview card ── */
+(function(){
+  const stage=document.getElementById('stage'), shell=document.getElementById('shell');
+  if(!stage||!shell) return;
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+  stage.addEventListener('pointermove',e=>{
+    const r=stage.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+    shell.style.transform=`rotateY(${((px-.5)*11).toFixed(2)}deg) rotateX(${((.5-py)*11).toFixed(2)}deg) scale(1.012)`;
+    shell.style.setProperty('--mx',(px*100).toFixed(1)+'%');
+    shell.style.setProperty('--my',(py*100).toFixed(1)+'%');
+  });
+  stage.addEventListener('pointerleave',()=>{ shell.style.transform='rotateY(0deg) rotateX(0deg) scale(1)'; });
+})();
 
 updatePct();
 </script>
